@@ -2,7 +2,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
 import {webcrypto} from 'node:crypto';
 
 function client(storage){
@@ -19,8 +22,8 @@ function client(storage){
  const writes=fs.readFileSync(new URL('../public/writes.mjs',import.meta.url),'utf8').replace(/^export /gm,'');
  const additions=['money-client','client-model','statements'].map(name=>fs.readFileSync(new URL('../public/'+name+'.mjs',import.meta.url),'utf8').replace(/^export /gm,'')).join('\n');
  const finance=fs.readFileSync(new URL('../src/finance.mjs',import.meta.url),'utf8').replace(/^export /gm,'');
- const demo=fs.readFileSync(new URL('../preview/demo.mjs',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace(/^export /gm,'');
- const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
+ const demo=fs.readFileSync(new URL('../preview/demo.mjs',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace(/^export /gm,'');
+ const app=fs.readFileSync(new URL('../public/app.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'');
  const run=code=>vm.runInContext(code,context);
  run('(()=>{'+finance+'\n'+demo+'})();\n'+helper+'\n'+writes+'\n'+additions+'\n'+app);
  return {run,context,nodes,handlers};
@@ -69,6 +72,25 @@ test('Offline preview embeds the current scripts and has no external module requ
  assert.doesNotThrow(()=>new vm.Script(script));
  assert.ok(script.includes('function historyPeriod('));assert.ok(script.includes('globalThis.mahfazatiPreview='));
  assert.ok(!html.includes('<script src='));assert.ok(!html.includes('import {historyPeriod'));
+});
+
+for(const [label,ending] of [['LF','\n'],['CRLF','\r\n']])test(`Preview build produces a standalone executable script from ${label} source files`,()=>{
+ const tempRoot=fs.realpathSync(os.tmpdir()),tempDir=fs.mkdtempSync(path.join(tempRoot,'mahfazati-preview-'));
+ try{
+  const files=['scripts/build-preview.mjs','public/style.css','public/history.mjs','public/writes.mjs','public/money-client.mjs','public/client-model.mjs','public/statements.mjs','src/finance.mjs','preview/demo.mjs','public/app.js'];
+  for(const file of files){
+   const target=path.join(tempDir,file);fs.mkdirSync(path.dirname(target),{recursive:true});
+   const source=fs.readFileSync(new URL('../'+file,import.meta.url),'utf8').replace(/\r?\n/g,ending);
+   fs.writeFileSync(target,source);
+  }
+  execFileSync(process.execPath,[path.join(tempDir,'scripts/build-preview.mjs')],{stdio:'pipe'});
+  const html=fs.readFileSync(path.join(tempDir,'معاينة_تفاعلية.html'),'utf8'),script=html.match(/<script>([\s\S]*)<\/script>/)[1];
+  assert.doesNotThrow(()=>new vm.Script(script));assert.doesNotMatch(script,/^import /m);
+  assert.ok(script.includes('globalThis.mahfazatiPreview='));assert.ok(script.includes('function render('));
+ }finally{
+  assert.equal(path.dirname(path.resolve(tempDir)),tempRoot);
+  fs.rmSync(tempDir,{recursive:true,force:true});
+ }
 });
 
 test('Cash lists follow the selected month and do not truncate at forty entries',()=>{
