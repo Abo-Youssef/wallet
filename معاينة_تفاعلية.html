@@ -1,0 +1,867 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>محفظتي — معاينة تفاعلية دون حفظ</title><style>:root{color-scheme:light;font:16px/1.75 "Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink);background:var(--canvas);--canvas:oklch(.968 .004 75);--surface:oklch(.995 .002 75);--soft:oklch(.978 .005 75);--ink:oklch(.265 .012 55);--muted:oklch(.49 .015 55);--accent:oklch(.52 .15 40);--accent-hover:oklch(.46 .14 40);--accent-soft:oklch(.956 .025 55);--line:oklch(.885 .01 70);--good:oklch(.405 .085 155);--good-soft:oklch(.95 .025 155);--warn:oklch(.455 .105 65);--warn-soft:oklch(.964 .04 82);--danger:oklch(.475 .155 25);--danger-soft:oklch(.961 .021 25);--navy:var(--accent);--blue:var(--accent);--radius:16px;--shadow:0 6px 24px oklch(.25 .01 55 / .035);--z-header:10;--z-action:15;--z-modal:30;--z-toast:40}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh}button,input,select,textarea{font:inherit}button{cursor:pointer;touch-action:manipulation}button,a,input,select,textarea,summary{-webkit-tap-highlight-color:transparent}button:disabled,fieldset:disabled button{opacity:.58;cursor:not-allowed}:focus-visible{outline:3px solid var(--accent);outline-offset:3px}a{color:var(--accent);text-underline-offset:4px}h1,h2,h3,h4,p{overflow-wrap:anywhere}h1,h2,h3,h4{line-height:1.5}svg{vertical-align:middle;flex-shrink:0}[hidden]{display:none!important}
+.shell{max-width:1320px;margin-inline:auto;padding:0 16px 140px;width:100%}.skip-link{position:fixed;z-index:60;top:-120px;right:12px;padding:12px 20px;background:var(--surface);border:1px solid var(--accent);border-radius:8px}.skip-link:focus{top:12px}
+.topbar,.app-header{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:var(--z-header)}.topinner{max-width:1320px;margin-inline:auto;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{display:flex;align-items:center;justify-content:center;gap:12px;text-align:center}.logo{width:42px;height:42px;display:grid;place-items:center;flex-shrink:0;border-radius:12px;background:var(--accent-soft);color:var(--accent);font-size:1.625rem;font-weight:700}.brandname{font-size:1.5rem;font-weight:800;line-height:1.3;letter-spacing:-.025em}.subtitle{font-size:.8125rem;color:var(--muted)}.actions{display:flex;align-items:center;justify-content:center;gap:4px}.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex-shrink:0;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:10px;padding:8px}.iconbtn:hover{color:var(--accent);background:var(--accent-soft)}.avatar{display:none}
+.nav{position:fixed;bottom:0;inset-inline:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--surface);padding:8px 8px max(8px,env(safe-area-inset-bottom));border-top:1px solid var(--line);box-shadow:0 -4px 20px oklch(.25 .01 55 / .035)}.nav button{border:0;color:var(--muted);background:transparent;border-radius:10px;padding:8px 4px;min-height:50px;font-size:.875rem;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}.nav button:hover{background:var(--soft)}.nav button.active{color:var(--accent);background:var(--accent-soft)}
+.sync-status{min-height:25px;padding-block:14px 0;font-size:.8125rem;color:var(--muted);text-align:center}.sync-status::before{content:"";display:inline-block;width:6px;height:6px;background:var(--good);border-radius:50%;margin-inline-end:7px;vertical-align:middle}[aria-busy=true] .sync-status::before{background:var(--warn)}
+.page-intro,.main-head{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;margin:20px 0 28px}.page-intro h1,.main-head h1,.page-title{font-size:1.75rem;font-weight:750;margin:2px 0 6px}.eyebrow{color:var(--accent);font-size:.8125rem;font-weight:600;margin:0 0 4px}.hint{color:var(--muted);font-size:.875rem;margin:0;text-align:center;overflow-wrap:anywhere}.page-tools{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}.page-tools input,input[type=month]{max-width:240px;min-height:44px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center;direction:ltr}
+.panel,.ledger-panel,.entity-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:20px;min-width:0;text-align:center;box-shadow:var(--shadow)}.panel .panel,.entity-card .panel{box-shadow:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:16px 0 0;margin:16px 0 0}.section{margin-top:28px}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;text-align:center}.section-heading>*{margin-block:0}.section-title,.ledger-heading{font-size:1.125rem;font-weight:700;margin:0 0 20px;text-align:center}.smalltitle{font-size:1rem;font-weight:700;margin:0 0 16px;text-align:center}
+.work-layout{display:grid;gap:20px;align-items:start}.work-main,.work-aside{min-width:0}.work-aside .panel{padding:20px}.agenda-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0;margin-bottom:24px;padding-block:12px;border-block:1px solid var(--line)}.agenda-stat{flex:1 1 90px;display:flex;flex-direction:column;align-items:center;padding:8px 12px;text-align:center}.agenda-stat strong{font-size:1.5rem;line-height:1.4}.agenda-stat span{font-size:.875rem;color:var(--muted)}
+.ledger-rows{display:grid}.ledger-row{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:6px 12px;padding:16px 4px;border-bottom:1px solid var(--line);text-align:center}.ledger-row:last-child{border-bottom:0}.ledger-label{font-size:.9375rem;color:var(--muted)}.ledger-value{font-weight:750;font-size:1.25rem;font-variant-numeric:tabular-nums;direction:ltr}.ledger-note{grid-column:1/-1;font-size:.8125rem;color:var(--muted)}.portfolio-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 20px}.portfolio-summary>*{flex:1 1 90px;padding:8px;text-align:center}.portfolio-summary strong{font-variant-numeric:tabular-nums}
+.tile{text-align:center;padding:16px 8px;min-width:0}.tile.plain{background:var(--soft);border-radius:10px}.kpi-label{font-size:.875rem;color:var(--muted);margin-bottom:8px}.kpi-number{font-size:1.5rem;line-height:1.5;font-weight:750;direction:ltr;text-align:center;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.kpi-foot{font-size:.8125rem;color:var(--muted);margin-top:8px}.unit{font-size:.8125rem;font-weight:400;color:var(--muted);display:inline-block}.count{font-size:1.5rem;font-weight:750}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--danger)}.muted,.quiet{color:var(--muted)}
+.grid,.grid3,.grid4{display:grid;gap:16px;align-items:stretch;grid-template-columns:repeat(2,minmax(0,1fr))}.grid>*,.grid3>*,.grid4>*{min-width:0}.grid>.panel{grid-column:1/-1}.stack{display:flex;flex-direction:column;gap:16px}.divider{height:1px;background:var(--line);margin-block:24px}.row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center}.row>.section-title,.row>.smalltitle{margin-bottom:0}.flex{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;max-width:100%}.grow{flex:1 1 180px;min-width:0;text-align:center;overflow-wrap:anywhere}.line{border-bottom:1px solid var(--line);padding:20px 0}.line:last-child{border-bottom:0}.line-title{font-size:1rem;font-weight:650;text-align:center}.line-sub{color:var(--muted);font-size:.875rem;text-align:center;overflow-wrap:anywhere}.due-summary{min-width:110px;text-align:center}.duevalue{font-size:1.125rem;font-weight:750;direction:ltr;text-align:center;font-variant-numeric:tabular-nums}.due-summary .pill{margin-top:6px}
+.pill,.tag{display:inline-block;border-radius:6px;font-size:.8125rem;padding:3px 10px;font-weight:600;background:var(--soft);color:var(--muted);white-space:nowrap}.pill.late{background:var(--danger-soft);color:var(--danger)}.pill.today{background:var(--warn-soft);color:var(--warn)}.pill.future{background:var(--soft);color:var(--muted)}.pill.done{background:var(--good-soft);color:var(--good)}.tag{margin:3px;font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;padding:9px 16px;font-size:.9375rem;font-weight:600;text-align:center;white-space:normal;line-height:1.5}.btn:hover{background:var(--soft);border-color:var(--muted)}.btn:active{transform:translateY(1px)}.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}.btn.danger{color:var(--danger);background:var(--danger-soft);border-color:transparent}.btn.danger:hover{border-color:var(--danger)}.btn.small{padding:7px 12px;font-size:.875rem}.btn.block{width:100%}
+.filters,.scope-switch,.tabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin-block:16px}.filters button,.scope-switch button{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:9px;padding:8px 14px;min-height:44px}.filters button.selected,.scope-switch button.selected,.tabs .btn.active{color:var(--accent);border-color:var(--accent);background:var(--accent-soft);font-weight:600}.scope-switch{padding-bottom:16px;border-bottom:1px solid var(--line)}.scope-switch button{flex:1 1 130px}.empty{padding:28px 16px;margin-block:12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:10px;background:var(--soft)}.empty .btn{margin-top:12px}
+.search-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-block:16px}.search-bar input{width:min(100%,560px);min-width:0;min-height:46px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-align:center}.search-meta{text-align:center;font-size:.875rem;color:var(--muted);margin:8px 0 16px}.agreement-list{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
+.floatadd{position:fixed;bottom:max(86px,calc(76px + env(safe-area-inset-bottom)));left:16px;z-index:var(--z-action);border:0;border-radius:12px;background:var(--accent);color:var(--surface);min-height:48px;padding:12px 20px;font-weight:700;box-shadow:0 5px 16px oklch(.35 .08 40 / .16)}.banner,.local-review-banner{text-align:center;padding:8px 16px;font-size:.8125rem;background:var(--warn-soft);color:var(--warn)}.banner a,.local-review-banner a{color:inherit;padding:8px 5px;font-weight:650}.loading{margin:18vh auto;text-align:center;color:var(--muted)}.loading-state{padding:48px 20px;text-align:center;color:var(--muted);border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}.nowrap{white-space:nowrap}.overflow{overflow-wrap:anywhere}
+.modal-root{position:fixed;inset:0;background:oklch(.24 .01 55 / .5);z-index:var(--z-modal);padding:12px 8px;display:flex;justify-content:center;align-items:center;overflow:auto}.modal-card{width:min(100%,800px);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;background:var(--surface);border-radius:16px;box-shadow:0 20px 60px oklch(.2 .01 55 / .18);text-align:center}.modal-head{position:sticky;top:0;z-index:2;background:var(--surface);border-bottom:1px solid var(--line);padding:18px 64px;min-height:72px;display:grid;place-items:center}.modal-head h2{font-size:1.25rem;margin:0;text-align:center}.modal-head .iconbtn{position:absolute;left:12px;top:14px}.modal-content{padding:20px 16px 24px}.modal-content .alert{margin-bottom:16px}
+fieldset{border:0;padding:0;margin:0;min-width:0}.field{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;min-width:0;text-align:center}.field label{font-size:.875rem;font-weight:650;color:var(--ink);text-align:center}.field input,.field select,.field textarea{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:10px 12px;width:100%;min-width:0;min-height:46px;text-align:center}.field select{text-align-last:center}.field input[type=date],.field input[type=number],.field input[type=tel]{direction:ltr;font-variant-numeric:tabular-nums}.field input::-webkit-date-and-time-value{text-align:center}.field input:disabled,.field select:disabled{background:var(--soft);color:var(--muted)}.field textarea{min-height:96px;resize:vertical}.field .description{color:var(--muted);font-size:.8125rem;text-align:center}
+.form-actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:12px;padding-top:20px;margin-top:24px;border-top:1px solid var(--line)}.form-actions .btn{min-width:120px}.form-error{border-radius:9px;padding:12px;margin-top:12px;color:var(--danger);background:var(--danger-soft)}.form-error:empty{display:none}.form-error .btn{margin-top:12px}.alert{padding:14px 16px;border-radius:10px;background:var(--soft);color:var(--muted);text-align:center;font-size:.875rem;overflow-wrap:anywhere}.alert.warn{background:var(--warn-soft);color:var(--warn)}.form-choice{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}.form-choice label{flex:1 1 180px;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:48px;cursor:pointer}.form-choice input{accent-color:var(--accent)}.form-choice label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:var(--z-toast);width:max-content;max-width:min(520px,calc(100% - 24px));padding:14px 20px;border-radius:12px;color:var(--surface);background:var(--ink);box-shadow:var(--shadow);display:none;text-align:center}#toast.error{background:var(--danger)}
+.tablewrap{max-width:100%;overflow-x:auto;margin-block:16px;border:1px solid var(--line);border-radius:10px}.tbl,.statement-table{width:100%;border-collapse:collapse;min-width:560px;text-align:center}.tbl th,.statement-table th{background:var(--soft);color:var(--muted);padding:12px;font-size:.875rem;font-weight:600;text-align:center}.tbl td,.statement-table td{padding:14px 12px;border-bottom:1px solid var(--line);font-size:.875rem;text-align:center;overflow-wrap:anywhere;max-width:280px;font-variant-numeric:tabular-nums}.tbl tr:hover td{background:var(--soft)}.tbl tr:last-child td,.statement-table tr:last-child td{border-bottom:0}
+.history-form{margin-top:20px;padding:16px;border-radius:12px;background:var(--soft)}.history-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}.history-validation{color:var(--warn);font-size:.875rem;text-align:center;margin:0 0 12px}.history-validation:empty{display:none}.history-note{text-align:center;margin:16px 0}.history-summary{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;border-bottom:1px solid var(--line)}.history-summary span{font-size:.875rem;color:var(--muted)}.history-entry{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px}.history-more{margin:20px 0 0;text-align:center}.history-more p{margin-top:8px}.audit-details{margin:12px auto 0;max-width:100%}.audit-details summary{color:var(--accent);cursor:pointer;min-height:44px;padding:10px;font-size:.875rem}.audit-details .tbl{min-width:400px;table-layout:fixed}.audit-details .tbl td{white-space:pre-wrap}
+.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px;margin-block:20px;text-align:center}.detail-grid>div{min-width:0;padding:14px 8px;border-bottom:1px solid var(--line)}.detail-grid dt{color:var(--muted);font-size:.8125rem}.detail-grid dd{margin:4px 0 0;font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere}.connection-error{max-width:600px;margin:12vh auto}.connection-error .logo{margin-inline:auto}.connection-error h1{font-size:1.5rem}.refresh-error{margin-top:16px}.refresh-error .btn{margin-inline:8px}
+.statement-toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-block:16px 24px}.statement-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.statement-summary>*{min-width:0}.statement-document{text-align:center}.statement-document h2{font-size:1.5rem}.statement-document h3{margin-top:28px}.statement-footnote{color:var(--muted);font-size:.875rem;text-align:center}.print-only{display:none}
+@media(max-width:420px){.topinner{justify-content:center;gap:8px;padding:12px}.brand{width:100%}.brandname{font-size:1.375rem}.shell{padding-inline:12px}.panel,.ledger-panel,.entity-card{padding:16px}.page-intro h1,.main-head h1{font-size:1.5rem}.row{flex-direction:column;gap:12px}.grow{flex-basis:auto;width:100%}.line .flex{width:100%}.line .flex .btn{flex:1 1 auto}.modal-content .grid,.detail-grid,.history-form .grid{grid-template-columns:1fr}.form-actions .btn{flex:1 1 110px;min-width:0}.form-choice{flex-direction:column}.form-choice label{flex-basis:auto}.history-entry .grow{width:100%}}
+@media(min-width:640px){.shell{padding-inline:24px}.topinner{padding-inline:24px}.panel,.ledger-panel,.entity-card{padding:24px}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.modal-root{padding:24px}.modal-card{max-height:calc(100dvh - 48px)}.modal-content{padding:24px 28px 28px}.grid>.panel{grid-column:auto}}
+@media(min-width:900px){.shell{padding-bottom:80px}.nav{position:static;border-top:0;box-shadow:none;padding:0 20px 12px;max-width:600px;margin-inline:auto}.nav button{flex-direction:row;gap:8px;min-height:44px;padding:8px 18px;font-size:.9375rem}.work-layout{grid-template-columns:minmax(0,1fr) 310px;gap:24px}.work-aside{position:sticky;top:160px}.page-intro,.main-head{flex-direction:row;justify-content:space-between;gap:24px;margin:24px 0 32px}.page-intro>div:first-child{min-width:0}.floatadd{bottom:24px;left:24px}#toast{bottom:28px}}
+@media(min-width:1200px){.topbar,.app-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px max(24px,calc((100% - 1272px) / 2))}.topinner{display:contents}.brand{order:0}.nav{order:1;padding:0;margin:0;max-width:none}.actions{order:2}.work-aside{top:112px}.sync-status{text-align:start}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.btn:active{transform:none}}
+@media print{@page{size:A4;margin:15mm}body{background:var(--surface);font-size:11pt}.screen-only,.statement-toolbar,.banner,.local-review-banner,#toast,.floatadd,.topbar,.app-header,.skip-link{display:none!important}body.printing-statement #app{display:none!important}body.printing-statement #modal{position:static;padding:0;background:transparent;overflow:visible}body.printing-statement .modal-card{max-height:none;width:100%;overflow:visible;box-shadow:none;border:0}body.printing-statement .modal-head{display:none!important}.modal-content{padding:0}.print-only{display:block}.tablewrap{overflow:visible;border:0}.statement-table,.tbl{min-width:0;font-size:10pt}.statement-table th,.statement-table td{padding:8px 6px}.statement-summary{grid-template-columns:1fr 1fr}.ledger-panel,.panel{box-shadow:none;break-inside:avoid}thead{display:table-header-group}tr{break-inside:avoid}button{display:none!important}}
+
+/* Composition details for the approved RTL, centered-card layout. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.month-control{display:flex;justify-content:center;align-items:center}.ledger-note{display:block;margin-top:3px}.section-heading{justify-content:center}.section-heading .section-title{margin-bottom:0}.result-count{font-size:.875rem;color:var(--muted);background:var(--soft);padding:4px 12px;border-radius:7px}
+.scheduled-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ledger-column{min-width:0}.ledger-column+.ledger-column{border-inline-start:1px solid var(--line);padding-inline-start:16px}.scheduled-ledger .ledger-row{grid-template-columns:1fr;gap:3px;padding:12px 2px}.scheduled-ledger .ledger-note{min-height:42px;font-size:.8125rem}.scheduled-ledger .ledger-heading{padding-bottom:12px;border-bottom:1px solid var(--line)}.scheduled-ledger .btn{margin-top:12px;padding-inline:8px;font-size:.875rem}
+.portfolio-summary{display:block}.portfolio-counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-block:16px}.portfolio-counts strong,.portfolio-counts span{display:block}.portfolio-counts strong{font-size:1.25rem}.portfolio-counts span{font-size:.8125rem;color:var(--muted)}.portfolio-summary>.hint{margin-top:12px}.data-toolbar{margin-bottom:20px}.data-toolbar .filters{margin-block:0 12px}.search-bar .field{flex:1 1 280px;max-width:560px;margin:0}.search-bar input{width:100%}.agreement-summary{margin-bottom:24px}.agreement-payments{margin-top:24px}.statement-summary{display:block}.statement-summary .ledger-rows{max-width:560px;margin-inline:auto}.statement-heading{padding-bottom:16px;border-bottom:1px solid var(--line)}
+@media(min-width:900px){.scheduled-ledger .ledger-row{grid-template-columns:1fr 1fr;min-height:82px}.scheduled-ledger .ledger-note{min-height:0}.scheduled-ledger{gap:24px}.ledger-column+.ledger-column{padding-inline-start:24px}.ledger-column .ledger-value{font-size:1.375rem}.manager-layout .work-main>.ledger-panel:nth-child(2) .ledger-rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.manager-layout .work-main>.ledger-panel:nth-child(2) .ledger-row{grid-template-columns:1fr;border-bottom:0}.manager-layout .work-main>.ledger-panel:nth-child(2) .ledger-label{min-height:70px}.manager-layout .work-main>.ledger-panel:nth-child(2) .hint{margin-top:20px}}
+@media(max-width:420px){.scheduled-ledger .ledger-value{font-size:1.125rem}.scheduled-ledger .ledger-label{font-size:.875rem}.scheduled-ledger{gap:12px}.ledger-column+.ledger-column{padding-inline-start:12px}.scheduled-ledger .ledger-heading{font-size:1rem}}
+@media print{.statement-summary{display:block}.statement-heading{border:0;padding:0}.statement-table th,.statement-table td{font-size:10pt}.statement-document .hint{font-size:9pt}}
+.statement-summary .statement-table{min-width:0;table-layout:fixed}.statement-summary .statement-table th,.statement-summary .statement-table td{padding:12px 6px}.statement-summary .statement-table th:first-child{width:45%}
+#local-review-banner{background:var(--warn-soft)!important;color:var(--warn)!important;border-bottom:1px solid var(--line);font:inherit!important;font-size:.8125rem!important;text-align:center}#local-review-banner a{color:inherit!important}
+@media(min-width:900px){.floatadd{display:none}}
+@media print{#local-review-banner{display:none!important}}
+</style></head><body><div id="app"></div><div id="modal" class="modal-root" hidden></div><div id="toast" role="status" aria-live="polite"></div><script>(()=>{/** Core math for Mahfazati. Pure and independently testable. Amounts are INTEGER halalas. */
+function assert(cond, message='بيانات غير صحيحة') { if (!cond) throw Object.assign(new Error(message),{code:400}); }
+function parseMoney(value, label='المبلغ') {
+  assert(typeof value==='string'||typeof value==='number',`${label}: نوع القيمة غير صحيح`);
+  const s = String(value ?? '').trim();
+  assert(/^\d+(\.\d{1,2})?$/.test(s), `${label}: أدخل مبلغًا صحيحًا بحد أقصى منزلتين عشريتين`);
+  const [whole,fraction='']=s.split('.');
+  const cents = Number(whole)*100+Number(fraction.padEnd(2,'0'));
+  assert(Number.isSafeInteger(cents) && cents>=0 && cents<=1e13, `${label}: القيمة خارج النطاق`);
+  return cents;
+}
+function isDate(s) {
+  if (typeof s!=='string'||!/^\d{4}-\d\d-\d\d$/.test(s)||s<'1000-01-01') return false;
+  const d=new Date(`${s}T12:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0,10)===s;
+}
+function addMonths(s, count) {
+  assert(isDate(s), 'التاريخ غير صحيح');
+  assert(Number.isSafeInteger(count)&&count>=0&&count<=7200,'فترة الجدولة غير صحيحة');
+  const [y,m,d]=s.split('-').map(Number);
+  const z=new Date(Date.UTC(y,m-1+count,1,12));
+  const yy=z.getUTCFullYear(), mm=z.getUTCMonth();
+  assert(yy<=9999,'نهاية الجدولة تتجاوز نطاق التاريخ المدعوم');
+  const day=Math.min(d,new Date(Date.UTC(yy,mm+1,0,12)).getUTCDate());
+  return `${yy}-${String(mm+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
+/** Equalize what remains, capped by each slot's previous balance. No payment
+ * may increase a partly paid installment. Integer remainders go to later slots. */
+function distributeCapped(sum,caps){
+  assert(Number.isSafeInteger(sum)&&sum>=0&&caps.length>0&&caps.every(x=>Number.isSafeInteger(x)&&x>=0),'توزيع غير صحيح');
+  assert(sum<=caps.reduce((a,b)=>a+b,0),'التوزيع يتجاوز المتبقي');
+  let lo=0,hi=Math.max(...caps);
+  while(lo<hi){const mid=Math.ceil((lo+hi)/2);if(caps.reduce((s,c)=>s+Math.min(c,mid),0)<=sum)lo=mid;else hi=mid-1}
+  const parts=caps.map(c=>Math.min(c,lo));
+  let remainder=sum-parts.reduce((a,b)=>a+b,0);
+  // Preserve the established rule: the final eligible installment receives
+  // rounding halalas, without exceeding its cap.
+  for(let i=parts.length-1;i>=0&&remainder;i--){const n=Math.min(remainder,caps[i]-parts[i]);parts[i]+=n;remainder-=n}
+  assert(remainder===0,'تعذر موازنة الأقساط');return parts;
+}
+function splitEvenly(sum, count) {
+  assert(Number.isSafeInteger(sum)&&sum>=0&&Number.isSafeInteger(count)&&count>0&&count<=600,'قيمة أو مدة غير صحيحة');
+  const each=Math.floor(sum/count), remainder=sum%count;
+  return Array.from({length:count},(_,i)=>each+(i===count-1?remainder:0));
+}
+/**
+ * Each payment targets the installment SLOT selected at the time of recording.
+ * A partial receipt leaves that same slot open for its remaining balance.
+ * An overpayment is applied to future slots by either reducing the number of
+ * remaining payments (shorten) or redistributing their amounts (spread).
+ * Rebuilding from the immutable agreement and active payments means that
+ * corrections and voids cannot silently create mismatched totals.
+ */
+function project(agreement, payments=[]) {
+  const total=Number(agreement.total_cents), opening=Number(agreement.opening_cents);
+  const count=Number(agreement.installment_count), frequency=Number(agreement.frequency_months);
+  assert(Number.isSafeInteger(total)&&Number.isSafeInteger(opening)&&total>=0&&opening>=0&&opening<=total,'قيمة الاتفاق أو الرصيد الافتتاحي غير صحيحة');
+  assert(Number.isInteger(count)&&count>=1&&count<=600,'عدد الأقساط يجب أن يكون بين 1 و600');
+  assert([1,3,6,12].includes(frequency),'دورية الدفعات غير مدعومة');
+  assert(isDate(agreement.first_due_date),'تاريخ أول استحقاق غير صحيح');
+  const original=splitEvenly(total-opening,count);
+  const rows=original.map((amount,i)=>({slot:i, due_date:addMonths(agreement.first_due_date,i*frequency), remaining_cents:amount, applied_cents:0, initial_cents:amount}));
+  const active=payments.filter(p=>Number(p.active??1)===1)
+    .sort((a,b)=>String(a.created_at??'').localeCompare(String(b.created_at??'')) || String(a.id).localeCompare(String(b.id)));
+  let paid=0;const payment_contexts={};
+  for(const p of active) {
+    const amount=Number(p.amount_cents), slot=Number(p.slot_index);
+    assert(Number.isSafeInteger(amount)&&amount>0,'المبلغ المنفذ يجب أن يكون أكبر من الصفر');
+    assert(Number.isInteger(slot)&&slot>=0&&slot<rows.length,'القسط المختار غير موجود');
+    const row=rows[slot];
+    assert(row.remaining_cents>0,'لا يمكن تسجيل دفعة على قسط مكتمل أو أُلغي بالجدولة');
+    payment_contexts[p.id]={expected_cents:row.remaining_cents,due_date:row.due_date};
+    const outstanding=rows.reduce((v,r)=>v+r.remaining_cents,0);
+    assert(amount<=outstanding,'المبلغ يتجاوز كامل الرصيد المتبقي');
+    const applied=Math.min(amount,row.remaining_cents);
+    row.remaining_cents-=applied;
+    row.applied_cents+=applied;
+    let extra=amount-applied;
+    if(extra>0) {
+      const candidates=rows.filter(r=>r.slot>slot&&r.remaining_cents>0);
+      assert(candidates.length>0,'لا توجد أقساط قادمة لتوزيع المبلغ الإضافي');
+      assert(['shorten','spread'].includes(p.reschedule_method),'اختر طريقة إعادة الجدولة للمبلغ الزائد');
+      const available=candidates.reduce((v,r)=>v+r.remaining_cents,0);
+      assert(extra<=available,'الزيادة تتجاوز قيمة الأقساط القادمة');
+      if(p.reschedule_method==='shorten') {
+        for(let i=candidates.length-1;i>=0&&extra>0;i--) {
+          const d=Math.min(extra,candidates[i].remaining_cents);
+          candidates[i].remaining_cents-=d;
+          candidates[i].advanced_cents=(candidates[i].advanced_cents??0)+d;
+          extra-=d;
+        }
+      } else {
+        const portions=distributeCapped(available-extra,candidates.map(r=>r.remaining_cents));
+        for(let i=0;i<candidates.length;i++) {
+          const old=candidates[i].remaining_cents;
+          candidates[i].remaining_cents=portions[i];
+          candidates[i].advanced_cents=(candidates[i].advanced_cents??0)+(old-portions[i]);
+        }
+      }
+    }
+    paid+=amount;
+  }
+  const left=rows.reduce((v,r)=>v+r.remaining_cents,0);
+  assert(left===total-opening-paid,'خطأ في اتزان الاستحقاقات والحركات');
+  return {rows,payment_contexts,total_cents:total,opening_cents:opening,paid_since_opening_cents:paid,paid_total_cents:opening+paid,remaining_cents:left};
+}
+function monthOf(s) {return String(s||'').slice(0,7)}
+function dueStatus(date, now) {return date<now?'متأخر':date===now?'اليوم':'قادم'}
+function currentSummary(agreements, payments, expenses, month, today) {
+  const summary={due_in:0,fulfilled_in:0,remaining_in:0,due_out:0,fulfilled_out:0,remaining_out:0,
+    overdue_in:0,overdue_out:0,future_in:0,future_out:0,cash_in:0,cash_out:0,net:0};
+  const dues=[],payment_contexts={},agreementMap=new Map(agreements.map(a=>[a.id,a])),grouped=new Map();
+  for(const p of payments){if(!grouped.has(p.agreement_id))grouped.set(p.agreement_id,[]);grouped.get(p.agreement_id).push(p)}
+  for(const a of agreements) {
+    if(a.status!=='active') continue;
+    const related=grouped.get(a.id)||[];
+    const p=project(a,related);
+    Object.assign(payment_contexts,p.payment_contexts);
+    const direction=a.direction==='in'?'in':'out';
+    for(const r of p.rows) {
+      const isThisMonth=monthOf(r.due_date)===month;
+      if(isThisMonth) {
+        summary[`due_${direction}`]+=r.remaining_cents+r.applied_cents;
+        summary[`fulfilled_${direction}`]+=r.applied_cents;
+        summary[`remaining_${direction}`]+=r.remaining_cents;
+      }
+      if(r.remaining_cents>0) {
+        if(r.due_date<today) summary[`overdue_${direction}`]+=r.remaining_cents;
+        if(r.due_date>today) summary[`future_${direction}`]+=r.remaining_cents;
+        dues.push({agreement_id:a.id, slot:r.slot, title:a.title, kind:a.kind, entity_id:a.entity_id,
+          direction:a.direction, due_date:r.due_date, amount_cents:r.remaining_cents, status:dueStatus(r.due_date,today),
+          agreement_version:a.version, agreement_title:a.title});
+      }
+    }
+  }
+  for(const p of payments) if(Number(p.active??1)===1 && monthOf(p.paid_at)===month) {
+    const a=agreementMap.get(p.agreement_id);
+    if(a) summary[`cash_${a.direction==='in'?'in':'out'}`]+=Number(p.amount_cents);
+  }
+  for(const e of expenses) if(Number(e.active??1)===1 && monthOf(e.paid_at)===month) {
+    summary[`cash_${e.direction==='in'?'in':'out'}`]+=Number(e.amount_cents);
+  }
+  summary.net=summary.cash_in-summary.cash_out;
+  dues.sort((a,b)=>a.due_date.localeCompare(b.due_date)||a.title.localeCompare(b.title));
+  assert(Object.values(summary).every(Number.isSafeInteger),'الإجماليات تتجاوز نطاق الأرقام الدقيق');
+  return {summary,dues,payment_contexts};
+}
+
+const plusDays=(date,num)=>{const x=new Date(`${date}T12:00:00Z`);x.setUTCDate(x.getUTCDate()+num);return x.toISOString().slice(0,10)};
+function demoHistory(){
+ const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Riyadh'});
+ return Array.from({length:125},(_,i)=>({
+   id:`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`,
+   created_at:new Date(`${plusDays(today,-Math.floor(i/3))}T${String(9+i%3).padStart(2,'0')}:30:00+03:00`).toISOString(),
+   actor:i%4?'المساعد — بيانات تجريبية':'المدير — بيانات تجريبية',
+   action:['إضافة','تسجيل حركة','تحديث مهمة','تعديل'][i%4],
+   target_type:['entity','payment','task','agreement'][i%4],
+   after_json:JSON.stringify({title:['إضافة وحدة سكنية','تحصيل إيجار شقة 1','متابعة تأمين السيارة','تحديث بيانات عقد'][i%4]})
+ }));
+}
+
+function demoData(month){const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Riyadh'});
+ const entities=[{id:'p1',kind:'property',name:'عمارة النخيل',location:'الرياض',electricity_meter:'1234567',reference_value_cents:90000000},{id:'u1',kind:'unit',name:'شقة 1',parent_id:'p1',status:'rented'},{id:'u2',kind:'unit',name:'محل 3',parent_id:'p1',status:'available'},{id:'c1',kind:'car',name:'كامري 2025',plate:'أ ب ج 1234',reference_value_cents:12000000,odometer_km:24000,maintenance_due_km:30000,insurance_expiry:plusDays(today,7)},{id:'w1',kind:'worker',name:'عامل 1',phone:'0500000000',work_location:'الرياض',iqama_number:'—',iqama_expiry:plusDays(today,20)}];
+ const agreements=[{id:'a1',kind:'rent',direction:'in',entity_id:'u1',title:'إيجار شقة 1',start_date:today,end_date:plusDays(today,30),first_due_date:today,total_cents:300000,opening_cents:0,installment_count:1,frequency_months:1,status:'active',version:0},{id:'a2',kind:'purchase',direction:'out',entity_id:'c1',title:'قسط سيارة كامري',first_due_date:today,total_cents:12000000,opening_cents:6000000,installment_count:24,frequency_months:1,status:'active',version:0},{id:'a3',kind:'other',direction:'out',entity_id:null,title:'شراء هاتف بالأقساط',first_due_date:plusDays(today,10),total_cents:600000,opening_cents:200000,installment_count:10,frequency_months:1,status:'active',version:0}];
+ const payments=[{id:'payment-demo',agreement_id:'a1',slot_index:0,amount_cents:120000,paid_at:today,active:1,created_at:today+'T09:00:00.000Z',created_by:'المساعد — بيانات توضيحية'}];
+ const expenses=[{id:'expense-demo',title:'صيانة توضيحية',amount_cents:24000,paid_at:today,direction:'out',active:1,version:0,created_at:today+'T10:00:00.000Z'}];
+ for(const e of entities)e.version=0;agreements[0].version=1;
+ const finances=currentSummary(agreements,payments,expenses,month,today);
+ return {user:{role:new URLSearchParams(location.search).get('role')==='assistant'?'assistant':'manager',email:'preview@example.com'},today,month,entities,agreements,payments,expenses,tasks:[{id:'t1',version:0,title:'مراجعة أوراق السيارة',description:'مهمة توضيحية',due_date:today,assigned_to:'assistant',state:'open'}],alerts:[{key:'demo1',title:'انتهاء تأمين: كامري 2025',due_date:plusDays(today,7),source:'سيارة',late:false}],...finances};
+}
+globalThis.mahfazatiPreview={data:demoData,history:demoHistory};
+
+})();
+// Shared by the live API and the offline preview. Audit dates use Riyadh time.
+const HISTORY_PAGE_SIZE = 50;
+const check = (ok, message) => { if (!ok) throw Object.assign(new Error(message),{code:400}); };
+function validDate(value) {
+  return /^[1-9]\d{3}-\d{2}-\d{2}$/.test(value) &&
+    !Number.isNaN(Date.parse(`${value}T12:00:00Z`)) &&
+    new Date(`${value}T12:00:00Z`).toISOString().slice(0, 10) === value;
+}
+function historyPeriod(period, today) {
+  check(validDate(today), 'التاريخ الحالي غير صحيح');
+  const previous = new Date(`${today}T12:00:00Z`);
+  previous.setUTCDate(previous.getUTCDate() - 6);
+  const ranges = {
+    all: ['', ''], today: [today, today],
+    week: [previous.toISOString().slice(0, 10), today],
+    month: [`${today.slice(0, 7)}-01`, today],
+    year: [`${today.slice(0, 4)}-01-01`, today]
+  };
+  check(period in ranges, 'الفترة غير صحيحة');
+  return {from: ranges[period][0], to: ranges[period][1]};
+}
+function parseHistoryFilters(params) {
+  const from = params.get('from') || '', to = params.get('to') || '';
+  const sort = params.get('sort') || 'newest';
+  check(!from || validDate(from), 'تاريخ البداية غير صحيح');
+  check(!to || validDate(to), 'تاريخ النهاية غير صحيح');
+  check(!from || !to || from <= to, 'تاريخ البداية يجب ألا يتجاوز تاريخ النهاية');
+  check(['newest', 'oldest'].includes(sort), 'ترتيب السجل غير صحيح');
+  const rawLimit = params.get('limit') ?? String(HISTORY_PAGE_SIZE);
+  check(/^\d+$/.test(rawLimit) && Number(rawLimit) >= 1 && Number(rawLimit) <= 100, 'عدد النتائج يجب أن يكون بين 1 و100');
+  const query = {
+    from, to, sort, limit: Number(rawLimit), cursor: null,
+    fromUTC: from ? new Date(`${from}T00:00:00.000+03:00`).toISOString() : null,
+    toUTC: to ? new Date(`${to}T23:59:59.999+03:00`).toISOString() : null
+  };
+  const cursor = params.get('cursor');
+  if (cursor) {
+    try {
+      check(cursor.length <= 1024, '');
+      const value = JSON.parse(atob(cursor));
+      check(Array.isArray(value) && value.length === 5, '');
+      const [at, id, cursorFrom, cursorTo, cursorSort] = value;
+      check(typeof at === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(at) && new Date(at).toISOString() === at, '');
+      check(typeof id === 'string' && /^[0-9a-f-]{36}$/i.test(id), '');
+      check(cursorFrom === from && cursorTo === to && cursorSort === sort, '');
+      query.cursor = {at, id};
+    } catch { throw Object.assign(new Error('رابط متابعة السجل غير صحيح؛ أعد تطبيق الفترة'),{code:400}); }
+  }
+  return query;
+}
+function historyPage(rows, query) {
+  const has_more = rows.length > query.limit;
+  const entries = rows.slice(0, query.limit);
+  const last = entries.at(-1);
+  return {
+    entries, has_more,
+    next_cursor: has_more ? btoa(JSON.stringify([last.created_at, last.id, query.from, query.to, query.sort])) : null,
+    filters: {from: query.from, to: query.to, sort: query.sort, timezone: 'Asia/Riyadh'}
+  };
+}
+function filterHistory(entries, query) {
+  const compare = (a, b) => a === b ? 0 : a < b ? -1 : 1;
+  const direction = query.sort === 'oldest' ? 1 : -1;
+  const rows = entries.filter(entry => {
+    if (query.fromUTC && entry.created_at < query.fromUTC) return false;
+    if (query.toUTC && entry.created_at > query.toUTC) return false;
+    if (!query.cursor) return true;
+    return direction * (compare(entry.created_at, query.cursor.at) || compare(entry.id, query.cursor.id)) > 0;
+  }).sort((a, b) => direction * (compare(a.created_at, b.created_at) || compare(a.id, b.id)));
+  return historyPage(rows, query);
+}
+
+// Keep only hashes, request IDs and versions in this tab's session storage.
+// No names, amounts, identity numbers or form content are persisted here.
+const storageKey='mahfazati-pending-writes-v1';
+let pending=new Map();
+try{
+  const entries=JSON.parse(globalThis.sessionStorage?.getItem(storageKey)||'[]');
+  if(Array.isArray(entries))pending=new Map(entries.filter(x=>Array.isArray(x)&&/^[a-f0-9]{64}$/.test(x[0])&&
+    x[1]&&/^[a-f0-9-]{36}$/.test(x[1].id)&&(x[1].version===undefined||Number.isSafeInteger(x[1].version))));
+}catch{}
+const save=()=>{try{globalThis.sessionStorage?.setItem(storageKey,JSON.stringify([...pending]))}catch{}};
+const stable=v=>v&&typeof v==='object'?(Array.isArray(v)?v.map(stable):Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])]))):v;
+async function prepareWrite(path,method,payload,actor){
+  const {request_id,expected_version,...business}=payload;
+  const bytes=new TextEncoder().encode(JSON.stringify(stable({path,method,actor,business})));
+  const key=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+  let entry=pending.get(key);
+  if(!entry){entry={id:request_id||crypto.randomUUID(),...(expected_version===undefined?{}:{version:expected_version})};pending.set(key,entry);save()}
+  return {key,body:{...business,...(entry.version===undefined?{}:{expected_version:entry.version}),request_id:entry.id}};
+}
+function finishWrite(key){pending.delete(key);save()}
+
+// Keep input comparisons in integer halalas, matching the API's money format.
+function inputCents(value) {
+  const text=String(value??'').trim();
+  if(!/^\d+(\.\d{1,2})?$/.test(text))throw new Error('أدخل مبلغًا صحيحًا بحد أقصى منزلتين عشريتين');
+  const [whole,fraction='']=text.split('.');
+  const amount=Number(whole)*100+Number(fraction.padEnd(2,'0'));
+  if(!Number.isSafeInteger(amount)||amount<0||amount>1e13)throw new Error('المبلغ خارج النطاق المسموح');
+  return amount;
+}
+
+function normalizeSearch(value){
+ return String(value??'').normalize('NFKC').toLocaleLowerCase('ar')
+  .replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776))
+  .replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').trim();
+}
+const searchableFields=['name','title','location','plate','electricity_meter','phone','work_location','iqama_number','passport_number','contract_number','counterparty','notes','note','insurance_expiry','maintenance_date','iqama_expiry','passport_expiry'];
+function entityReference(data,id){
+ const active=data?.entities?.find(e=>e.id===id);if(active)return active;
+ const archived=data?.archived_entities?.find(e=>e.id===id);return archived?{...archived,archived:1}:undefined;
+}
+function formatRiyadhDate(value){
+ if(!value)return '—';
+ const instant=new Date(value);if(Number.isNaN(instant.getTime()))return '—';
+ return new Intl.DateTimeFormat('ar-SA-u-ca-gregory',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Riyadh'}).format(instant);
+}
+function recordMatches(record,query,context=[]){
+ const words=normalizeSearch(query).split(/\s+/).filter(Boolean);
+ const haystack=normalizeSearch([...searchableFields.map(key=>record?.[key]),...context].join(' '));
+ return words.every(word=>haystack.includes(word));
+}
+function selectDataRecords(data,kind,query=''){
+ const allEntities=data.entities||[],allAgreements=data.agreements||[],allExpenses=data.expenses||[];
+ if(kind==='closed'){
+  const closed=allAgreements.filter(a=>Boolean(a.closed_at));
+  const agreements=closed.filter(a=>{const entity=entityReference(data,a.entity_id);return recordMatches(a,query,[entity?.name,entityReference(data,entity?.parent_id)?.name])})
+   .sort((a,b)=>b.closed_at.localeCompare(a.closed_at)||a.id.localeCompare(b.id));
+  return {entities:[],agreements,expenses:[],resultCount:agreements.length,totalCount:closed.length};
+ }
+ const candidates=allEntities.filter(e=>kind==='property'?['property','unit'].includes(e.kind):e.kind===kind);
+ let entities=candidates.filter(e=>recordMatches(e,query,[allEntities.find(p=>p.id===e.parent_id)?.name,...allAgreements.filter(a=>a.entity_id===e.id).flatMap(a=>[a.title,a.contract_number,a.counterparty,a.phone])]));
+ // Keep a matching unit under its property in both representations.
+ if(kind==='property'){
+  const ids=new Set(entities.map(e=>e.id));
+  for(const e of entities)if(e.parent_id)ids.add(e.parent_id);
+  entities=candidates.filter(e=>ids.has(e.id));
+ }
+ const agreements=allAgreements.filter(a=>a.kind==='other'&&a.status==='active'&&recordMatches(a,query));
+ const expenses=allExpenses.filter(e=>Number(e.active??1)===1&&recordMatches(e,query,[entityReference(data,e.entity_id)?.name]));
+ return {entities,agreements,expenses,resultCount:kind==='other'?agreements.length+expenses.length:entities.length,totalCount:kind==='other'?allAgreements.filter(a=>a.kind==='other'&&a.status==='active').length+allExpenses.length:candidates.length};
+}
+function agreementPayments(data,id){
+ return (data.payments||[]).filter(p=>p.agreement_id===id&&Number(p.active??1)===1)
+  .sort((a,b)=>b.paid_at.localeCompare(a.paid_at)||b.created_at.localeCompare(a.created_at)||b.id.localeCompare(a.id));
+}
+function alertDestination(alert,data){
+ const [prefix,id]=String(alert.key||'').split(':');
+ const type=alert.target_type||(prefix==='rent'?'agreement':['ins','maint','km','iqama','passport'].includes(prefix)?'entity':null);
+ const targetId=alert.target_id||id;
+ const record=(type==='agreement'?data.agreements:type==='entity'?data.entities:[])?.find(x=>x.id===targetId);
+ return record?{action:type==='agreement'?'agreementDetails':'entityDetails',id:targetId,label:type==='agreement'?'عرض العقد':'عرض السجل'}:null;
+}
+function buildMonthStatement(data){
+ if(!data||!/^\d{4}-\d{2}$/.test(data.month))throw new Error('حدّث بيانات الشهر قبل فتح الكشف');
+ const entities=new Map([...(data.archived_entities||[]),...(data.entities||[])].map(e=>[e.id,e]));
+ const agreements=new Map((data.agreements||[]).map(a=>[a.id,a]));
+ const transactions=[];
+ for(const p of data.payments||[]){
+  const agreement=agreements.get(p.agreement_id);
+  if(!agreement||Number(p.active??1)!==1||p.paid_at.slice(0,7)!==data.month)continue;
+  transactions.push({id:p.id,date:p.paid_at,created_at:p.created_at||'',type:agreement.direction==='in'?'تحصيل':'سداد',direction:agreement.direction,title:agreement.title,entity:entities.get(agreement.entity_id)?.name||'',amount_cents:p.amount_cents,note:p.note||''});
+ }
+ for(const e of data.expenses||[]){
+  if(Number(e.active??1)!==1||e.paid_at.slice(0,7)!==data.month)continue;
+  transactions.push({id:e.id,date:e.paid_at,created_at:e.created_at||'',type:'مصروف مباشر',direction:'out',title:e.title,entity:entities.get(e.entity_id)?.name||'',amount_cents:e.amount_cents,note:e.note||''});
+ }
+ transactions.sort((a,b)=>a.date.localeCompare(b.date)||a.created_at.localeCompare(b.created_at)||a.id.localeCompare(b.id));
+ return {month:data.month,today:data.today,summary:{...data.summary},transactions,openDues:(data.dues||[]).filter(d=>d.due_date.slice(0,7)===data.month)};
+}
+
+const escapeStatementText=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const statementMoney=cents=>(Number(cents||0)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+function csvText(value){
+ let text=String(value??'');
+ // Spreadsheet programs interpret these prefixes as executable formulas.
+ if(/^[\s]*[=+\-@]/.test(text)||/^[\t\r\n]/.test(text))text="'"+text;
+ return '"'+text.replace(/"/g,'""')+'"';
+}
+function statementCSV(statement){
+ const rows=[['الشهر','تاريخ التنفيذ','نوع الحركة','العملية','الأصل','الاتجاه','المبلغ بالريال','الملاحظات'],...statement.transactions.map(t=>[statement.month,t.date,t.type,t.title,t.entity,t.direction==='in'?'داخل':'خارج',(t.amount_cents/100).toFixed(2),t.note])];
+ return '\ufeff'+rows.map(row=>row.map(csvText).join(',')).join('\r\n')+'\r\n';
+}
+function statementHTML(statement){
+ const e=escapeStatementText,s=statement.summary;
+ const metricRow=(label,incoming,outgoing)=>`<tr><th scope="row">${e(label)}</th><td>${statementMoney(incoming)}</td><td>${statementMoney(outgoing)}</td></tr>`;
+ return `<section class="statement-document" aria-label="الكشف الشهري"><div class="statement-heading"><p class="eyebrow">محفظتي · كشف شهري</p><h3>${e(statement.month)}</h3><p class="hint">جميع المبالغ بالريال السعودي. الاستحقاقات منفصلة عن التنفيذ النقدي.</p></div>
+ <div class="statement-summary"><h3 class="section-title">استحقاقات الشهر المختار</h3><div class="tablewrap"><table class="tbl statement-table"><thead><tr><th scope="col">البيان</th><th scope="col">تحصيل</th><th scope="col">سداد</th></tr></thead><tbody>${metricRow('إجمالي المستحق',s.due_in,s.due_out)}${metricRow('منفذ من هذه الاستحقاقات',s.fulfilled_in,s.fulfilled_out)}${metricRow('المتبقي',s.remaining_in,s.remaining_out)}</tbody></table></div>
+ <h3 class="section-title">النقد المنفذ خلال الشهر</h3><div class="ledger-rows"><div class="ledger-row"><span>دخل فعليًا</span><strong>${statementMoney(s.cash_in)} ر.س</strong></div><div class="ledger-row"><span>خرج فعليًا</span><strong>${statementMoney(s.cash_out)} ر.س</strong></div><div class="ledger-row"><span>صافي التدفق</span><strong>${statementMoney(s.net)} ر.س</strong></div></div><p class="hint">الصافي هو الداخل ناقص الخارج خلال الشهر؛ لا يمثل رصيد حساب بنكي.</p></div>
+ <h3 class="section-title section">الحركات المنفذة (${statement.transactions.length})</h3>${statement.transactions.length?`<div class="tablewrap"><table class="tbl statement-table"><thead><tr><th scope="col">تاريخ التنفيذ</th><th scope="col">النوع</th><th scope="col">العملية / الأصل</th><th scope="col">المبلغ</th><th scope="col">ملاحظات</th></tr></thead><tbody>${statement.transactions.map(t=>`<tr><td>${e(t.date)}</td><td>${e(t.type)}</td><td>${e(t.title)}${t.entity?'<br><span class="muted">'+e(t.entity)+'</span>':''}</td><td>${statementMoney(t.amount_cents)}</td><td>${e(t.note||'—')}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">لا توجد حركات منفذة خلال هذا الشهر.</p>'}
+ <p class="hint statement-footnote">القيم الافتتاحية قبل تأسيس المحفظة لا تدخل في الحركات النقدية. يعكس الكشف آخر بيانات محمّلة للشهر.</p></section>`;
+}
+
+
+const root=document.getElementById('app'),modalRoot=document.getElementById('modal'),toastBox=document.getElementById('toast');
+const state={data:null,page:'home',kind:'property',filter:'all',dataMode:'cards',search:'',month:new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Riyadh'}).slice(0,7),requestedMonth:'',demo:Boolean(globalThis.mahfazatiPreview),dueScope:'month',loading:false,error:'',loadRequest:0,visibleDues:20,agreementReturn:null,statement:null};
+state.history={from:'',to:'',sort:'newest',preset:'all',entries:[],cursor:null,hasMore:false,loading:false,error:'',request:0};
+const h=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=c=>(Number(c||0)/100).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});
+const toInput=c=>(Number(c||0)/100).toFixed(2);
+const fmtDate=d=>d?new Intl.DateTimeFormat('ar-SA-u-ca-gregory',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(`${d}T12:00:00Z`)):'—';
+const badge=(status)=>`<span class="pill ${status==='متأخر'?'late':status==='اليوم'?'today':status==='قادم'?'future':'done'}">${h(status)}</span>`;
+const btn=(label,action,id='',extra='')=>`<button type="button" class="btn ${extra}" data-action="${action}" data-id="${h(id)}">${label}</button>`;
+const icon=name=>{const shapes={home:'<path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7"/>',collect:'<path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"/>',pay:'<path d="M12 15V3m-4 4 4-4 4 4M4 16v5h16v-5"/>',data:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',refresh:'<path d="M20 7a9 9 0 1 0 1 8M20 3v5h-5"/>',history:'<path d="M4 5h16M4 12h16M4 19h16"/><circle cx="7" cy="5" r="1"/>',tasks:'<rect x="4" y="3" width="16" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',alerts:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',backup:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>'};return `<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${shapes[name]||''}</svg>`};
+const role=()=>state.data?.user?.role;
+const isAssistant=()=>role()==='assistant';
+const entityById=id=>entityReference(state.data,id);
+const agreementById=id=>state.data?.agreements?.find(x=>x.id===id);
+function notify(message,isError=false){toastBox.textContent=message;toastBox.className=isError?'error':'';toastBox.style.display='block';clearTimeout(notify.timer);notify.timer=setTimeout(()=>toastBox.style.display='none',3700)}
+async function api(path,method='GET',payload){
+  if(state.demo)throw new Error('هذه معاينة فقط؛ لا تحفظ التغييرات.');
+  const writing=method!=='GET',options={method,headers:{}};
+  if(writing&&(state.loading||state.error))throw new Error('حدّث بيانات المحفظة أولًا قبل تسجيل تغيير جديد.');
+  let prepared;
+  if(writing){prepared=await prepareWrite(path,method,payload??{},state.data?.user?.email||'');options.headers['Content-Type']='application/json';options.headers['X-Mahfazati-Action']='1';options.body=JSON.stringify(prepared.body)}
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20_000);options.signal=controller.signal;
+  try{
+    let res;try{res=await fetch(path,options)}catch{throw Object.assign(new Error(writing?'لم يصل تأكيد الحفظ؛ أعد المحاولة بالبيانات نفسها لتأكيد النتيجة دون تكرار.':'تعذر الاتصال بالخادم؛ تحقق من الإنترنت ثم أعد المحاولة'),{uncertain:writing})}
+    let body;try{body=await res.json()}catch{throw Object.assign(new Error('تعذر قراءة تأكيد الخادم؛ أعد المحاولة بالبيانات نفسها'),{uncertain:writing})}
+    if(!res.ok){const retryable=[401,403,408,425,429].includes(res.status)||res.status>=500;if(prepared&&!retryable)finishWrite(prepared.key);throw Object.assign(new Error(body.error||'لم تكتمل العملية'),{code:res.status,uncertain:writing&&retryable})}
+    if(prepared)finishWrite(prepared.key);return body;
+  }finally{clearTimeout(timer)}
+}
+async function reload(month=state.requestedMonth||state.month){
+  const request=++state.loadRequest;state.requestedMonth=month;state.loading=true;state.error='';if(state.data)render();
+  try{
+    const data=state.demo?globalThis.mahfazatiPreview.data(month):await api('/api/bootstrap?month='+encodeURIComponent(month));
+    if(request!==state.loadRequest)return false;
+    state.data=data;state.month=data.month;state.requestedMonth='';state.updatedAt=new Date();return true;
+  }catch(error){if(request===state.loadRequest){state.error=error.message;if(state.data)state.month=state.data.month}return false}
+  finally{if(request===state.loadRequest){state.loading=false;state.requestedMonth='';
+    if(state.data)render();else root.innerHTML=`<main class="shell"><section class="panel connection-error"><div class="logo">◈</div><h1>تعذر فتح محفظتي</h1><p role="alert">${h(state.error)}</p>${btn('إعادة المحاولة','reload','','primary')}</section></main>`;
+  }}
+}
+function header(){return `<header class="topbar app-header"><div class="topinner"><div class="brand"><div class="logo" aria-hidden="true">م</div><div><div class="brandname">محفظتي</div><div class="subtitle">${role()==='manager'?'مساحة المدير':'مساحة المساعد'}</div></div></div><div class="actions">
+<button class="iconbtn" aria-label="سجل العمليات" title="سجل العمليات" data-action="history">${icon('history')}</button>
+<button class="iconbtn" aria-label="المهام" title="المهام" data-action="tasks">${icon('tasks')}</button>
+<button class="iconbtn" aria-label="التنبيهات" title="التنبيهات" data-action="alerts">${icon('alerts')}</button>
+${role()==='manager'?`<button class="iconbtn" aria-label="نسخة احتياطية" title="تصدير نسخة احتياطية" data-action="backup">${icon('backup')}</button>`:''}
+<button class="iconbtn" aria-label="تحديث البيانات" title="تحديث البيانات" data-action="reload">${icon('refresh')}</button><span class="avatar">${role()==='manager'?'المدير':'المساعد'}</span></div></div>
+<nav class="nav" aria-label="الأقسام الرئيسية">${[['home','الرئيسية'],['collect','التحصيل'],['pay','السداد'],['data','البيانات']].map(([key,label])=>`<button data-action="page" data-id="${key}" aria-current="${state.page===key?'page':'false'}" class="${state.page===key?'active':''}">${icon(key)}<span>${label}</span></button>`).join('')}</nav></header>`}
+function render(){if(!state.data)return;
+  const active=document.activeElement,restore=root.contains?.(active),focus=restore?{id:active.id,action:active.dataset?.action,item:active.dataset?.id,start:active.selectionStart,end:active.selectionEnd}:null;
+  let body=state.page==='home'?(isAssistant()?assistantHome():managerHome()):state.page==='collect'?cashPage('in'):state.page==='pay'?cashPage('out'):dataPage();
+  root.innerHTML=`${state.demo?'<div class="banner">معاينة توضيحية دون حفظ · <a href="?role=manager">المدير</a> · <a href="?role=assistant">المساعد</a></div>':''}${header()}<main id="main-content" class="shell" aria-busy="${state.loading}">${state.error?`<div class="alert warn refresh-error" role="alert">${h(state.error)} ${btn('تحديث البيانات','reload','','small')}</div>`:''}<div class="sync-status" role="status">${state.loading?'جارٍ تحميل '+h(state.requestedMonth||state.month)+'… الأرقام المعروضة تخص '+h(state.data.month):state.updatedAt?'آخر تحديث: '+h(state.updatedAt.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Riyadh'})):''}</div>${body}</main>${isAssistant()?'<button class="floatadd" data-action="quickadd">＋ إضافة</button>':''}`;
+  if(focus){const target=(focus.id?document.getElementById(focus.id):null)||[...root.querySelectorAll('[data-action]')].find(x=>x.dataset.action===focus.action&&x.dataset.id===focus.item);target?.focus({preventScroll:true});if(target?.setSelectionRange&&focus.start!=null&&target.type!=='month')target.setSelectionRange(focus.start,focus.end)}
+}
+function heading(title,desc,extra=''){return `<div class="main-head page-intro"><div><h1 class="page-title" tabindex="-1">${title}</h1><p class="hint">${desc}</p></div>${extra?`<div class="page-tools">${extra}</div>`:''}</div>`}
+function monthTools(){return `<label class="month-control"><span class="sr-only">اختيار الشهر</span><input aria-label="اختيار الشهر" type="month" id="month" value="${h(state.month)}" /></label>${btn('كشف الشهر','statement','','small')}`}
+function ledgerRow(label,value,note='',cls=''){return `<div class="ledger-row"><div class="ledger-label">${label}${note?`<span class="ledger-note">${note}</span>`:''}</div><strong class="ledger-value ${cls}">${money(value)} <span class="unit">ر.س</span></strong></div>`}
+function metric(label,value,foot,cls=''){return `<div class="tile"><div class="kpi-label">${label}</div><div class="kpi-number ${cls}">${money(value)} <span class="unit">ر.س</span></div><div class="kpi-foot">${foot}</div></div>`}
+function managerHome(){const s=state.data.summary,d=state.data;
+ return `${heading('نظرة على محفظتك','مراجعة شهر '+h(state.month)+' · الاستحقاقات والتنفيذ النقدي كلٌّ في موضعه',monthTools())}
+ <div class="work-layout manager-layout"><div class="work-main"><section class="panel ledger-panel"><div class="section-heading"><div><p class="eyebrow">حسب موعد الاستحقاق</p><h2 class="section-title">التزامات الشهر</h2></div></div><div class="scheduled-ledger"><div class="ledger-column"><h3 class="ledger-heading">التحصيل</h3><div class="ledger-rows">${ledgerRow('إجمالي المستحق',s.due_in)}${ledgerRow('تم تحصيله',s.fulfilled_in,'من استحقاقات هذا الشهر','good')}${ledgerRow('المتبقي للتحصيل',s.remaining_in)}</div>${btn('مراجعة التحصيل','page','collect','block')}</div><div class="ledger-column"><h3 class="ledger-heading">السداد</h3><div class="ledger-rows">${ledgerRow('إجمالي المستحق',s.due_out)}${ledgerRow('تم سداده',s.fulfilled_out,'من استحقاقات هذا الشهر','good')}${ledgerRow('المتبقي للسداد',s.remaining_out)}</div>${btn('مراجعة السداد','page','pay','block')}</div></div></section>
+ <section class="panel ledger-panel"><p class="eyebrow">حسب تاريخ التنفيذ</p><h2 class="section-title">التدفق النقدي الفعلي</h2><div class="ledger-rows">${ledgerRow('دخل خلال الشهر',s.cash_in,'التحصيلات المنفذة','good')}${ledgerRow('خرج خلال الشهر',s.cash_out,'السداد والمصروفات المباشرة')}${ledgerRow('صافي التدفق',s.net,'الداخل ناقص الخارج',s.net>=0?'good':'bad')}</div><p class="hint">الدفعة المبكرة أو المتأخرة تدخل هنا بتاريخ تنفيذها. الصافي لا يمثل رصيد حساب بنكي.</p></section></div>
+ <aside class="work-aside"><section class="panel ledger-panel"><p class="eyebrow">كل الفترات · الحالة في ${h(d.today)}</p><h2 class="section-title">ما يحتاج متابعة</h2><div class="ledger-rows">${ledgerRow('تحصيل متأخر',s.overdue_in,'','bad')}${ledgerRow('سداد متأخر',s.overdue_out,'','bad')}${ledgerRow('تحصيل مستقبلي',s.future_in)}${ledgerRow('سداد مستقبلي',s.future_out)}</div>${btn('عرض التنبيهات','alerts','','block')}</section><section class="panel portfolio-summary"><h2 class="section-title">أصول المحفظة</h2><div class="portfolio-counts">${['property','unit','car','worker'].map(k=>`<div><strong>${d.entities.filter(e=>e.kind===k).length}</strong><span>${{property:'عقارات',unit:'وحدات',car:'سيارات',worker:'عمال'}[k]}</span></div>`).join('')}</div>${btn('مراجعة البيانات','page','data','block')}<p class="hint">قيم الأصول مرجعية ولا تدخل في التدفق النقدي.</p></section></aside></div>`;
+}
+function assistantHome(){const d=state.data,today=d.today,openTasks=d.tasks.filter(x=>x.state==='open');
+  const candidates=d.dues.filter(x=>x.due_date<=plusDays(today,30));
+  const late=candidates.filter(x=>x.due_date<today).length,todayCount=candidates.filter(x=>x.due_date===today).length;
+ return `${heading('جدول أعمالك','ابدأ بالمستحق، ثم أكمل المتابعة · '+fmtDate(today),btn('＋ إضافة جديدة','quickadd','','primary'))}
+ <div class="agenda-summary"><div class="agenda-stat"><strong class="bad">${late}</strong><span>استحقاقات متأخرة</span></div><div class="agenda-stat"><strong>${todayCount}</strong><span>مستحقة اليوم</span></div><div class="agenda-stat"><strong>${openTasks.length}</strong><span>مهام مفتوحة</span></div></div>
+ <div class="work-layout"><div class="work-main"><section class="panel"><div class="section-heading"><div><p class="eyebrow">المتأخر والقادم خلال 30 يومًا</p><h2 class="section-title">التحصيل والسداد</h2></div><span class="result-count">${candidates.length} استحقاق</span></div>${candidates.length?candidates.slice(0,state.visibleDues).map(dueItem).join(''):`<div class="empty">لا توجد استحقاقات تحتاج متابعة خلال الأيام القادمة.</div>`}${candidates.length>state.visibleDues?btn(`عرض المزيد (${candidates.length-state.visibleDues})`,'moreDues','','block'):''}</section></div>
+ <aside class="work-aside"><section class="panel"><div class="section-heading"><h2 class="section-title">المهام اليدوية</h2>${btn('＋ مهمة','taskAdd','','small')}</div>${openTasks.length?openTasks.map(taskItem).join(''):`<div class="empty">لا توجد مهام معلّقة.</div>`}</section><section class="panel"><h2 class="section-title">التنبيهات الإدارية</h2>${d.alerts.length?d.alerts.map(alertItem).join(''):`<div class="empty">لا توجد تنبيهات إدارية حاليًا.</div>`}</section></aside></div>`;
+}
+function plusDays(date,num){const x=new Date(`${date}T12:00:00Z`);x.setUTCDate(x.getUTCDate()+num);return x.toISOString().slice(0,10)}
+function dueItem(d){const a=agreementById(d.agreement_id), entity=entityById(d.entity_id);
+ return `<div class="line row"><div class="grow"><div class="line-title">${h(d.title)}</div><div class="line-sub">${h(entity?.name||({'other':'أخرى'}[d.kind]||d.kind))} · ${fmtDate(d.due_date)} · ${d.direction==='in'?'تحصيل':'سداد'}</div></div><div class="due-summary"><div class="duevalue">${money(d.amount_cents)} ر.س</div><div>${badge(d.status)}</div></div>${isAssistant()?btn(d.direction==='in'?'تم التحصيل':'تم السداد','payConfirm',`${d.agreement_id}::${d.slot}`,'small primary'):''}</div>`;
+}
+function taskItem(t){return `<div class="line row"><div class="grow"><div class="line-title">${h(t.title)}</div><div class="line-sub">${h(t.description)} ${t.due_date?'· '+fmtDate(t.due_date):''}</div></div>${badge(t.state==='done'?'مكتملة':t.due_date&&t.due_date<state.data.today?'متأخر':'جديدة')}${btn(t.state==='done'?'إعادة فتح':'تم التنفيذ','taskToggle',t.id,'small')}</div>`}
+function alertItem(a){const destination=alertDestination(a,state.data);return `<div class="line row"><div class="grow"><div class="line-title">${h(a.title)}</div><div class="line-sub">${h(a.source)} · ${fmtDate(a.due_date)}</div></div>${badge(a.late?'متأخر':'قادم')}<div class="flex">${destination?btn(destination.label,destination.action,destination.id,'small'):''}${isAssistant()?btn('تمت المتابعة','alertDismiss',a.key,'small'):''}</div></div>`}
+function cashPage(dir){const d=state.data,s=d.summary,flag=dir==='in'?'in':'out',title=dir==='in'?'التحصيل':'السداد';
+ const filtered=d.dues.filter(x=>x.direction===dir&&(state.dueScope==='all'||x.due_date.slice(0,7)===state.month)).filter(x=>state.filter==='all'||(state.filter==='late'?x.status==='متأخر':state.filter==='today'?x.status==='اليوم':x.status==='قادم'));
+ const payments=d.payments.filter(p=>agreementById(p.agreement_id)?.direction===dir&&p.paid_at.slice(0,7)===state.month).sort((a,b)=>b.created_at.localeCompare(a.created_at));
+ const direct=dir==='out'?d.expenses.filter(e=>e.paid_at.slice(0,7)===state.month):[];
+ return `${heading(title,'استحقاقات '+h(state.month)+' وحركاته النقدية، كلٌّ بحسب تاريخه',monthTools())}
+ <div class="agenda-summary cash-summary"><div class="agenda-stat"><strong>${money(s[`due_${flag}`])} <span class="unit">ر.س</span></strong><span>المستحق للشهر</span></div><div class="agenda-stat"><strong class="good">${money(s[`fulfilled_${flag}`])} <span class="unit">ر.س</span></strong><span>منفذ من استحقاق الشهر</span></div><div class="agenda-stat"><strong>${money(s[`remaining_${flag}`])} <span class="unit">ر.س</span></strong><span>المتبقي للشهر</span></div></div>
+ <section class="panel section"><div class="row"><h3 class="section-title">الاستحقاقات المفتوحة</h3><span class="hint">${filtered.length} استحقاق</span></div>
+ <div class="scope-switch" aria-label="نطاق الاستحقاقات">${[['month','الشهر المختار'],['all','جميع الفترات']].map(([key,label])=>`<button type="button" data-action="dueScope" data-id="${key}" aria-pressed="${state.dueScope===key}" class="${state.dueScope===key?'selected':''}">${label}</button>`).join('')}</div>
+ <div class="filters" aria-label="حالة الاستحقاق">${[['all','الكل'],['late','متأخر'],['today','اليوم'],['future','قادم']].map(([k,v])=>`<button type="button" aria-pressed="${state.filter===k}" class="${state.filter===k?'selected':''}" data-action="filter" data-id="${k}">${v}</button>`).join('')}</div>
+ ${filtered.length?filtered.map(dueItem).join(''):'<div class="empty">لا توجد استحقاقات مفتوحة في هذا التصنيف</div>'}</section>
+ <section class="panel"><h3 class="section-title">الحركات المنفذة خلال ${h(state.month)}</h3>${payments.length?payments.map(p=>{
+  const a=agreementById(p.agreement_id);
+  return `<div class="line row"><div class="grow"><div class="line-title">${h(a?.title||'عملية مالية')}</div><div class="line-sub">${fmtDate(p.paid_at)} · ${h(p.created_by||'')}</div></div><div class="duevalue">${money(p.amount_cents)} ر.س</div><div class="flex">${a?btn('تفاصيل الاتفاق','agreementDetails',a.id,'small'):''}${isAssistant()&&!a?.closed_at?`${btn('تعديل','payEdit',p.id,'small')}${btn('حذف','payVoid',p.id,'small danger')}`:''}</div></div>`
+ }).join(''):'<div class="empty">لا توجد حركات مسجلة</div>'}
+ ${dir==='out'?`<h3 class="section-title section">مصروفات مباشرة خلال ${h(state.month)}</h3>${direct.length?direct.map(e=>`<div class="line row"><div class="grow"><div class="line-title">${h(e.title)}</div><div class="line-sub">${fmtDate(e.paid_at)} · ${h(e.note||'')}</div></div><div class="duevalue">${money(e.amount_cents)} ر.س</div>${isAssistant()?btn('حذف','expenseVoid',e.id,'small danger'):''}</div>`).join(''):'<div class="empty">لا توجد مصروفات مباشرة</div>'}`:''}
+ </section>`;
+}
+const categoryNames={property:'عقار',unit:'وحدة',car:'سيارة',worker:'عامل',other:'أخرى',closed:'الاتفاقات المغلقة'};
+function dataTable(k,records=selectDataRecords(state.data,k,state.search)){
+ const ent=records.entities;
+ let cols=[],rows=[];
+ if(k==='property'){
+   cols=['السجل','التبعية / الموقع','الحالة','الإجراءات'];
+   rows=ent.filter(e=>['property','unit'].includes(e.kind)).map(e=>[`${e.kind==='property'?'🏢':'▤'} ${e.name}`,e.kind==='property'?(e.location||'عقار رئيسي'):(entityById(e.parent_id)?.name||'وحدة مستقلة'),e.kind==='property'?'عقار':({available:'متاحة',rented:'مؤجرة',maintenance:'صيانة',unavailable:'غير متاحة'}[currentUnitStatus(e)]||'—'),entityButtons(e)]);
+ }else if(k==='car'){
+   cols=['السيارة','رقم اللوحة','موعد التأمين / الصيانة','الإجراءات'];
+   rows=ent.filter(e=>e.kind==='car').map(e=>[e.name,e.plate||'—',`${e.insurance_expiry||'—'} / ${e.maintenance_date||'—'}`,entityButtons(e)]);
+ }else if(k==='worker'){
+   cols=['العامل','مكان العمل','الإقامة / الجواز','الإجراءات'];
+   rows=ent.filter(e=>e.kind==='worker').map(e=>[e.name,e.work_location||'—',`${e.iqama_expiry||'—'} / ${e.passport_expiry||'—'}`,entityButtons(e)]);
+ }else if(k==='closed'){
+   cols=['الاتفاق','الأصل المرتبط','تاريخ الإغلاق','الإجراءات'];
+   rows=records.agreements.map(a=>{const entity=entityById(a.entity_id);return [a.title,entity?entity.name+(entity.archived?' · مؤرشف':''):'غير مرتبط بأصل',formatRiyadhDate(a.closed_at),agreementButtons(a)]});
+ }else{
+   cols=['العملية','التصنيف','القيمة','الإجراءات'];
+   rows=[...records.agreements.map(a=>[a.title,a.closed_at?'مجدولة · مغلقة':'مجدولة',money(a.total_cents)+' ر.س',agreementButtons(a)]),...records.expenses.map(e=>[e.title,'مصروف مباشر',money(e.amount_cents)+' ر.س',expenseButtons(e)])];
+ }
+  const datarows=rows.map(r=>`<tr>${r.map((v,i)=>`<td>${i===r.length-1?v:h(v)}</td>`).join('')}</tr>`).join('');
+  return `<div class="panel"><div class="tablewrap" tabindex="0" role="region" aria-label="جدول البيانات؛ يمكن التمرير أفقيًا"><table class="tbl"><thead><tr>${cols.map(c=>`<th scope="col">${h(c)}</th>`).join('')}</tr></thead><tbody>${datarows||`<tr><td colspan="4">لا توجد سجلات مطابقة</td></tr>`}</tbody></table></div></div>`;
+}
+function dataPage(){const k=state.kind,records=selectDataRecords(state.data,k,state.search),ents=records.entities,agreements=records.agreements;
+ let body='';
+ if(k==='property'){
+  const props=ents.filter(e=>e.kind==='property'),standalone=ents.filter(e=>e.kind==='unit'&&!e.parent_id);
+  body=props.map(p=>{const children=ents.filter(e=>e.kind==='unit'&&e.parent_id===p.id),totalChildren=state.data.entities.filter(e=>e.kind==='unit'&&e.parent_id===p.id).length;
+    return `<div class="panel entity-card"><div class="row"><div class="grow"><div class="line-title">${h(p.name)}</div><div class="line-sub">${h(p.location||'')} ${p.electricity_meter?'· عداد الكهرباء: '+h(p.electricity_meter):''} · القيمة المرجعية: ${p.reference_value_cents==null?'غير مدخلة':money(p.reference_value_cents)+' ر.س'}</div></div>${entityButtons(p)}</div><div class="divider"></div><div class="row"><h4 class="smalltitle">الوحدات (${children.length}${state.search?' من '+totalChildren:''})</h4>${isAssistant()?btn('＋ وحدة','entityAdd','unit::'+p.id,'small'):''}</div>${children.length?children.map(renderUnit).join(''):`<div class="hint">${totalChildren&&state.search?'لا توجد وحدات مطابقة لهذا البحث.':'لم تُضف وحدات لهذا العقار بعد.'}</div>`}${agreementsFor(p.id)}</div>`}).join('');
+  body+=`<div class="panel"><div class="row"><h3 class="section-title">وحدات مستقلة (${standalone.length})</h3>${isAssistant()?btn('＋ وحدة مستقلة','entityAdd','unit','small'):''}</div>${standalone.length?standalone.map(renderUnit).join(''):'<div class="hint">لا توجد وحدات مستقلة.</div>'}</div>`;
+ }else if(k==='car'||k==='worker'){
+   body=ents.filter(e=>e.kind===k).map(e=>`<div class="panel"><div class="row"><div class="grow"><div class="line-title">${k==='car'?'🚙':'👤'} ${h(e.name)}</div><div class="line-sub">${k==='car'?`اللوحة: ${h(e.plate||'—')} · القيمة المرجعية: ${e.reference_value_cents==null?'—':money(e.reference_value_cents)+' ر.س'}`:`مكان العمل: ${h(e.work_location||'—')} · التواصل: ${h(e.phone||'—')}`}</div></div>${entityButtons(e)}</div>
+   <div class="divider"></div>${k==='car'?`<div class="grid3"><div class="hint">التأمين: ${fmtDate(e.insurance_expiry)}</div><div class="hint">الصيانة: ${fmtDate(e.maintenance_date)}</div><div class="hint">الكيلومترات: ${e.odometer_km??'—'} / ${e.maintenance_due_km??'—'}</div></div>`:`<div class="grid"><div class="hint">الإقامة: ${h(e.iqama_number||'—')} · ${fmtDate(e.iqama_expiry)}</div><div class="hint">الجواز: ${h(e.passport_number||'—')} · ${fmtDate(e.passport_expiry)}</div></div>`}
+   ${k==='car'?agreementsFor(e.id):''}</div>`).join('');
+ }else if(k==='closed'){
+  body=`<section class="panel"><h2 class="section-title">الاتفاقات المغلقة</h2><p class="hint">تبقى الاتفاقات قابلة للمراجعة بعد إغلاقها وأرشفة أصولها، حتى إن لم توجد حركات بعد التأسيس.</p>${agreements.map(a=>{const entity=entityById(a.entity_id);return `<div class="line row"><div class="grow"><div class="line-title">${h(a.title)}</div><div class="line-sub">${h(entity?.name||'دون أصل مرتبط')}${entity?.archived?' · أصل مؤرشف':''} · ${agreementLabel(a)}</div><div class="line-sub">أُغلق في ${formatRiyadhDate(a.closed_at)} · الإجمالي ${money(a.total_cents)} ر.س</div></div>${agreementButtons(a)}</div>`}).join('')}</section>`;
+ }else{
+  body=`<div class="panel"><h3 class="section-title">العمليات المجدولة في «أخرى»</h3>${agreements.filter(a=>a.kind==='other'&&a.status==='active').map(a=>`<div class="line row"><div class="grow"><div class="line-title">${h(a.title)}</div><div class="line-sub">إجمالي: ${money(a.total_cents)} ر.س · مدفوع سابقًا: ${money(a.opening_cents)} ر.س · ${a.installment_count} أقساط</div></div>${agreementButtons(a)}</div>`).join('')||'<div class="empty">لا توجد عمليات مجدولة</div>'}</div>
+  <div class="panel"><h3 class="section-title">المصروفات المباشرة</h3>${records.expenses.map(e=>`<div class="line row"><div class="grow"><div class="line-title">${h(e.title)}</div><div class="line-sub">${fmtDate(e.paid_at)}${e.note?' · '+h(e.note):''}</div></div><div class="duevalue">${money(e.amount_cents)} ر.س</div>${expenseButtons(e)}</div>`).join('')||'<div class="empty">لا توجد مصروفات مباشرة</div>'}</div>`;
+ }
+ return `${heading('البيانات','تُسجل الأصول مرة واحدة، وتظل الأقساط والحركات مرتبطة بها')}
+ <div class="panel data-toolbar"><div class="row"><div class="tabs" aria-label="نوع البيانات">${['property','car','worker','other','closed'].map(kind=>`<button type="button" aria-pressed="${k===kind}" class="btn ${k===kind?'active':''}" data-action="kind" data-id="${kind}">${categoryNames[kind]}</button>`).join('')}</div><button class="btn small" data-action="dataMode">${state.dataMode==='cards'?'عرض جدولي':'عرض البطاقات'}</button></div><div class="search-bar"><div class="field"><label for="data-search">البحث في ${categoryNames[k]}</label><input id="data-search" type="search" autocomplete="off" placeholder="الاسم، الرقم، الموقع أو العقد" value="${h(state.search)}"></div>${state.search?btn('مسح البحث','clearSearch','','small'):''}</div><p class="hint search-meta" role="status">${records.resultCount} سجل${state.search?' مطابق للبحث':''} من ${records.totalCount}</p></div>
+ ${isAssistant()&&k!=='closed'?`<div class="row" style="margin-bottom:15px"><span class="hint">الإضافة من نموذج، والمراجعة والتعديل من جدول أو بطاقات</span>${btn('＋ إضافة '+categoryNames[k],k==='other'?'otherAdd':'entityAdd',k,'primary')}</div>`:''}
+ ${records.resultCount===0?`<div class="empty">${state.search?'لا توجد سجلات مطابقة للبحث.':k==='closed'?'لا توجد اتفاقات مغلقة.':'لا توجد بيانات مسجلة حتى الآن.'}${state.search?'<div>'+btn('عرض جميع السجلات','clearSearch','','small')+'</div>':''}</div>`:state.dataMode==='table'?dataTable(k,records):(body||'<div class="empty">لا توجد بيانات مسجلة حتى الآن</div>')}`;
+}
+function agreementLabel(a){return `${{purchase:'شراء',sale:'بيع',rent:'إيجار',other:'أخرى'}[a.kind]||a.kind}`}
+const detailLabels={name:'الاسم',title:'العنوان',kind:'النوع',status:'الحالة',direction:'الاتجاه',parent_id:'العقار التابع له',entity_id:'الأصل المرتبط',agreement_id:'الاتفاق',reference_value_cents:'القيمة المرجعية',location:'الموقع',electricity_meter:'عداد الكهرباء',plate:'رقم اللوحة',insurance_expiry:'انتهاء التأمين',maintenance_date:'موعد الصيانة',odometer_km:'الكيلومترات الحالية',maintenance_due_km:'الصيانة عند',phone:'رقم التواصل',work_location:'مكان العمل',iqama_number:'رقم الإقامة',iqama_expiry:'انتهاء الإقامة',passport_number:'رقم الجواز',passport_expiry:'انتهاء الجواز',notes:'ملاحظات',note:'ملاحظات',description:'التفاصيل',contract_number:'رقم العقد',counterparty:'الطرف المرتبط',start_date:'بداية العقد',end_date:'نهاية العقد',first_due_date:'أول استحقاق',due_date:'موعد التنفيذ',total_cents:'إجمالي القيمة',opening_cents:'المدفوع قبل التأسيس',installment_count:'عدد الأقساط',frequency_months:'الدورية بالأشهر',amount_cents:'المبلغ',paid_at:'تاريخ التنفيذ الفعلي',slot_index:'رقم القسط',reschedule_method:'طريقة الجدولة',active:'حالة الحركة',archived:'الأرشفة',state:'حالة المهمة',assigned_to:'المكلّف',completed_at:'وقت الإتمام',completed_by:'من أتم المهمة',dismissed:'متابعة التنبيه',hidden:'إخفاء من العرض'};
+function detailValue(key,value){
+ if(value===undefined||value===null||value==='')return '—';
+ if(key.endsWith('_cents'))return money(value)+' ر.س';
+ if(key==='slot_index')return String(Number(value)+1);
+ if(key==='closed_at')return formatRiyadhDate(value);
+ if(['entity_id','parent_id'].includes(key))return entityById(value)?.name||'سجل مرتبط / مؤرشف';
+ if(key==='agreement_id')return agreementById(value)?.title||'اتفاق مرتبط';
+ if(key==='active')return Number(value)===1?'سارية':'ملغاة';
+ if(['archived','dismissed','hidden'].includes(key))return value?'نعم':'لا';
+ const labels={property:'عقار',unit:'وحدة',car:'سيارة',worker:'عامل',purchase:'شراء',sale:'بيع',rent:'إيجار',other:'أخرى',in:'تحصيل',out:'سداد',active:'نشط',closed:'مغلق',cancelled:'ملغى',available:'متاحة',rented:'مؤجرة',maintenance:'صيانة',unavailable:'غير متاحة',shorten:'تقليل المدة',spread:'تقليل قيمة الأقساط',open:'مفتوحة',done:'مكتملة',manager:'المدير',assistant:'المساعد'};
+ return ['kind','direction','status','reschedule_method','state','assigned_to'].includes(key)?labels[value]||String(value):String(value);
+}
+function recordGrid(record){return `<dl class="detail-grid">${Object.entries(record).filter(([k,v])=>detailLabels[k]&&v!==null&&v!==undefined&&v!=='').map(([k,v])=>`<div><dt>${h(detailLabels[k])}</dt><dd>${h(detailValue(k,k==='status'&&record.closed_at?'closed':v))}</dd></div>`).join('')}</dl>`}
+Object.assign(detailLabels,{closed_at:'تاريخ الإغلاق',closed_by:'أغلقه'});
+function openEntityDetails(id){const entity=entityById(id);if(!entity)return;showModal(entity.name,(entity.archived?'<div class="alert">أصل مؤرشف؛ بياناته المرجعية واتفاقاته محفوظة للمراجعة.</div>':'')+recordGrid(entity)+(entity.kind==='worker'?'':agreementsFor(id)))}
+function agreementButtons(a){return `<div class="flex">${a.closed_at?'<span class="pill done">مغلق</span>':''}${btn('التفاصيل','agreementDetails',a.id,'small')}${isAssistant()&&!a.closed_at?btn('تعديل','agreementEdit',a.id,'small'):''}</div>`}
+function expenseButtons(e){return `<div class="flex">${btn('التفاصيل','expenseDetails',e.id,'small')}${isAssistant()?btn('حذف','expenseVoid',e.id,'small danger'):''}</div>`}
+function openExpenseDetails(id){const expense=state.data.expenses.find(e=>e.id===id);if(expense)showModal(expense.title,recordGrid(expense)+`<div class="form-actions">${isAssistant()?btn('حذف المصروف','expenseVoid',id,'danger'):''}</div>`)}
+function openAgreementDetails(id){
+ const a=agreementById(id);if(!a)return;
+  state.agreementReturn=id;
+  const payments=agreementPayments(state.data,id),dues=state.data.dues.filter(d=>d.agreement_id===id);
+ const remaining=dues.reduce((sum,d)=>sum+d.amount_cents,0);
+  const canClose=!a.closed_at&&remaining===0&&(a.kind!=='rent'||a.end_date<state.data.today),archivedOrigin=Boolean(a.entity_id&&entityById(a.entity_id)?.archived);
+  showModal(a.title,`${a.closed_at?`<div class="alert">اتفاق مغلق منذ ${formatRiyadhDate(a.closed_at)}${a.closed_by?' بواسطة '+h(a.closed_by):''}. ${archivedOrigin?'الأصل مؤرشف، وتبقى البيانات محفوظة للمراجعة.':'يلزم إعادة فتحه قبل تصحيح أي حركة.'}</div>`:''}<div class="ledger-rows agreement-summary">${ledgerRow('المتبقي',remaining,'وفق الجدول الحالي')}${ledgerRow('منفذ بعد التأسيس',payments.reduce((sum,p)=>sum+p.amount_cents,0),'حركات مسجلة فعليًا','good')}</div>${recordGrid(a)}
+  <section class="agreement-payments"><h3 class="section-title">الحركات المنفذة عبر كل الأشهر (${payments.length})</h3>${payments.length?payments.map(p=>`<div class="line row"><div class="grow"><div class="line-title">${fmtDate(p.paid_at)} · القسط ${Number(p.slot_index)+1}</div><div class="line-sub">${h(p.note||'دون ملاحظات')}${p.created_by?' · '+h(p.created_by):''}</div></div><div class="duevalue">${money(p.amount_cents)} ر.س</div>${isAssistant()&&!a.closed_at?`<div class="flex">${btn('تعديل','payEdit',p.id,'small')}${btn('حذف','payVoid',p.id,'small danger')}</div>`:''}</div>`).join(''):'<div class="empty">لم تسجل حركات بعد تأسيس المحفظة على هذا الاتفاق.</div>'}<p class="hint">الحركات السارية فقط؛ يبقى أثر التصحيح والحذف في سجل العمليات.</p></section>
+  <h3 class="section-title section">الاستحقاقات المتبقية</h3>${dues.length?dues.map(dueItem).join(''):'<div class="empty">لا توجد مبالغ متبقية على هذا الجدول.</div>'}
+  ${isAssistant()?`<div class="form-actions">${a.closed_at?!archivedOrigin?btn('إعادة فتح الاتفاق','agreementReopen',id,'primary'):'':canClose?btn('إغلاق الاتفاق المسدد','agreementClose',id,'primary'):''}${!a.closed_at&&!payments.length?btn('إلغاء الجدول','agreementCancel',id,'danger'):''}</div>${a.closed_at&&archivedOrigin?'<p class="hint">لا يمكن إعادة فتح اتفاق مرتبط بأصل مؤرشف.</p>':''}${!a.closed_at&&remaining===0&&a.kind==='rent'&&!canClose?'<p class="hint">يمكن إغلاق عقد الإيجار بعد انتهاء مدته وتسوية كامل رصيده.</p>':''}${canClose?'<p class="hint">الإغلاق يحفظ الحركات ويتيح أرشفة الأصل عندما لا تبقى روابط نشطة أخرى.</p>':''}`:''}`);
+}
+function openStatement(){
+ if(state.loading||state.error)throw new Error('انتظر اكتمال تحديث الشهر قبل فتح الكشف');
+ state.statement=buildMonthStatement(state.data);
+ showModal('كشف شهر '+state.statement.month,`<div class="statement-toolbar screen-only">${btn('طباعة الكشف','statementPrint','','primary')}${btn('تصدير الحركات CSV','statementCSV')}</div>${statementHTML(state.statement)}`);
+}
+function exportStatement(){
+ if(!state.statement)throw new Error('افتح كشف الشهر أولًا');
+ const blob=new Blob([statementCSV(state.statement)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download=`mahfazati-transactions-${state.statement.month}.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('تم تصدير الحركات المنفذة خلال الشهر');
+}
+function auditChanges(before,after){
+ const keys=Object.keys(after||before||{}).filter(k=>detailLabels[k]&&(before?.[k]!==after?.[k])&&[before?.[k],after?.[k]].some(v=>v!==undefined&&v!==null&&v!==''));
+ if(!keys.length)return '';
+ return `<details class="audit-details"><summary>عرض تفاصيل العملية</summary><div class="tablewrap"><table class="tbl"><thead><tr><th scope="col">الحقل</th><th scope="col">قبل</th><th scope="col">بعد</th></tr></thead><tbody>${keys.map(k=>`<tr><th scope="row">${h(detailLabels[k])}</th><td>${h(detailValue(k,before?.[k]))}</td><td>${h(detailValue(k,after?.[k]))}</td></tr>`).join('')}</tbody></table></div></details>`;
+}
+function agreementsFor(entityId){const a=state.data.agreements.filter(x=>x.entity_id===entityId&&x.status==='active');
+ return a.length?`<div class="section"><h4 class="smalltitle">العقود والعمليات</h4>${a.map(x=>`<div class="line row"><div class="grow"><div class="line-title">${h(x.title)} <span class="tag">${agreementLabel(x)}</span></div><div class="line-sub">${x.contract_number?'رقم العقد: '+h(x.contract_number)+' · ':''}${money(x.total_cents)} ر.س · أول قسط: ${fmtDate(x.first_due_date)}</div></div>${agreementButtons(x)}</div>`).join('')}</div>`:'';
+}
+function currentUnitStatus(unit){const a=state.data.agreements.find(a=>a.entity_id===unit.id&&a.kind==='rent'&&a.status==='active'&&!a.closed_at&&a.start_date<=state.data.today&&a.end_date>=state.data.today);return a?'rented':unit.status}
+function renderUnit(u){return `<div class="line row"><div class="grow"><div class="line-title">${h(u.name)} <span class="tag">${{available:'متاحة',rented:'مؤجرة',maintenance:'صيانة',unavailable:'غير متاحة'}[currentUnitStatus(u)]||'متاحة'}</span></div>${u.notes?`<div class="line-sub">${h(u.notes)}</div>`:''}${agreementsFor(u.id)}</div>${entityButtons(u)}</div>`}
+function entityButtons(e){
+ const details=btn('التفاصيل','entityDetails',e.id,'small');if(!isAssistant()||e.archived)return details;
+ const act=e.kind==='worker'?'':btn('＋ '+(e.kind==='unit'?'عقد/عملية':'شراء/بيع'),'agreementAdd',e.id,'small');
+ return `<div class="flex">${details}${act}${btn('تعديل','entityEdit',e.id,'small')}${btn('أرشفة','entityDelete',e.id,'small danger')}</div>`;
+}
+let returnFocus=null;
+function showModal(title,content){
+  if(state.loading)throw new Error('انتظر اكتمال تحديث البيانات قبل فتح هذا العرض.');
+ if(modalRoot.hidden)returnFocus=document.activeElement;
+ content=content.replace(/(<form\b[^>]*>)([\s\S]*?)(<\/form>)/g,'$1<fieldset>$2</fieldset>$3');
+ modalRoot.hidden=false;root.inert=true;document.body.style.overflow='hidden';
+ modalRoot.innerHTML=`<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1"><div class="modal-head"><h2 id="modal-title">${h(title)}</h2><button class="iconbtn" type="button" aria-label="إغلاق" data-action="modalClose">×</button></div><div class="modal-content">${content}</div></div>`;
+ const first=modalRoot.querySelector('input:not([type=hidden]):not(:disabled),select:not(:disabled)')||modalRoot.querySelector('.modal-card');first?.focus();
+}
+function closeModal(force=false){
+ const form=modalRoot.querySelector('form:not(#history-form)');
+ if(!force&&form?.dataset.saving==='1')return;
+  if(!force&&(form?.dataset.dirty==='1'||form?.dataset.uncertain==='1')&&globalThis.confirm?.(form.dataset.uncertain==='1'?'لم يصل تأكيد الحفظ. يفضل إعادة المحاولة بالبيانات نفسها قبل الإغلاق. إغلاق النموذج؟':'إغلاق النموذج وترك التعديلات غير المحفوظة؟')===false)return;
+  state.history.request++;state.agreementReturn=null;state.statement=null;modalRoot.hidden=true;modalRoot.innerHTML='';root.inert=false;document.body.style.overflow='';
+ if(returnFocus?.isConnected)returnFocus.focus();else root.querySelector('[aria-current=page]')?.focus();
+}
+function field(label,name,value='',type='text',desc='',required=false){
+ const integer=['count','odometer_km','maintenance_due_km'].includes(name),max=name==='phone'?50:name==='notes'?1500:['note','description'].includes(name)?1200:255;
+ const numeric=type==='number'?`min="${name==='count'?1:0}" ${name==='count'?'max="600"':''} step="${integer?'1':'0.01'}" inputmode="${integer?'numeric':'decimal'}"`:'';
+ const date=type==='date'?'min="1000-01-01" max="9999-12-31"':'';
+ return `<div class="field"><label for="field-${h(name)}">${h(label)}${required?' <span aria-hidden="true">*</span>':''}</label>${type==='textarea'?`<textarea id="field-${h(name)}" name="${h(name)}" maxlength="${max}" ${required?'required':''} ${desc?`aria-describedby="help-${h(name)}"`:''}>${h(value)}</textarea>`:`<input id="field-${h(name)}" name="${h(name)}" type="${type}" value="${h(value??'')}" ${numeric} ${date} ${['text','tel'].includes(type)?`maxlength="${max}"`:''} ${required?'required':''} ${desc?`aria-describedby="help-${h(name)}"`:''}/>`}${desc?`<span id="help-${h(name)}" class="description">${h(desc)}</span>`:''}</div>`;
+}
+function formButtons(title='حفظ'){return `<div class="form-error" role="alert" tabindex="-1"></div><div class="form-actions"><button type="button" class="btn" data-action="modalClose">إلغاء</button><button type="submit" class="btn primary">${title}</button></div>`}
+function opt(items,value=''){return items.map(([k,v])=>`<option value="${h(k)}" ${String(k)===String(value)?'selected':''}>${h(v)}</option>`).join('')}
+function openEntityForm(kind,id=null,parent=null){const e=id?entityById(id):null;if(!e&&!['property','unit','car','worker'].includes(kind))return;
+ const fields=kind==='property'?`${field('اسم العقار','name',e?.name,'text','مثل عمارة الياسمين',true)}${field('الموقع','location',e?.location)}${field('رقم عداد الكهرباء','electricity_meter',e?.electricity_meter)}${field('قيمة العقار المرجعية بالريال','reference_value_cents',e?.reference_value_cents!=null?toInput(e.reference_value_cents):'','number','لا تدخل تلقائيًا في التحصيل أو السداد')}`:
+ kind==='unit'?`${field('اسم الوحدة','name',e?.name,'text','مثل شقة 1 أو محل 3',true)}${!e?`<div class="field"><label for="field-parent_id">تتبع لعقار (اختياري)</label><select id="field-parent_id" name="parent_id">${opt([['','وحدة مستقلة'],...state.data.entities.filter(x=>x.kind==='property').map(x=>[x.id,x.name])],parent)}</select></div>`:''}<div class="field"><label for="field-status">حالة الوحدة</label><select id="field-status" name="status">${opt([['available','متاحة'],['rented','مؤجرة'],['maintenance','صيانة'],['unavailable','غير متاحة']],e?.status||'available')}</select></div><div class="grid">${field('رقم عداد الكهرباء (اختياري)','electricity_meter',e?.electricity_meter)}${field('القيمة المرجعية (اختياري)','reference_value_cents',e?.reference_value_cents!=null?toInput(e.reference_value_cents):'','number','معلومة مرجعية لا تدخل في الحسابات')}</div>`:
+ kind==='car'?`${field('اسم السيارة','name',e?.name,'text','مثل كامري 2025',true)}${field('رقم اللوحة','plate',e?.plate)}${field('القيمة المرجعية بالريال','reference_value_cents',e?.reference_value_cents!=null?toInput(e.reference_value_cents):'','number')}
+ <div class="grid">${field('انتهاء التأمين','insurance_expiry',e?.insurance_expiry,'date')}${field('موعد الصيانة القادمة','maintenance_date',e?.maintenance_date,'date')}${field('الكيلومترات الحالية','odometer_km',e?.odometer_km,'number')}${field('الصيانة عند كم كيلومتر','maintenance_due_km',e?.maintenance_due_km,'number')}</div>`:
+ `${field('اسم العامل','name',e?.name,'text','',true)}<div class="grid">${field('رقم التواصل','phone',e?.phone,'tel')}${field('مكان العمل','work_location',e?.work_location)}${field('رقم الإقامة','iqama_number',e?.iqama_number)}${field('انتهاء الإقامة','iqama_expiry',e?.iqama_expiry,'date')}${field('رقم الجواز','passport_number',e?.passport_number)}${field('انتهاء الجواز','passport_expiry',e?.passport_expiry,'date')}</div>`;
+ showModal((e?'تعديل ':'إضافة ')+categoryNames[kind],`<form id="entity-form" data-id="${h(id||'')}" data-kind="${h(kind)}" data-version="${e?.version??0}">${fields}${field('ملاحظات (اختياري)','notes',e?.notes,'textarea')}${formButtons()}</form>`);
+}
+function openAgreementForm(kind,entityId=null,id=null){const a=id?agreementById(id):null;
+  if(a?.closed_at)return notify('أعد فتح الاتفاق من التفاصيل قبل تعديله.',true);
+ if(!a&&!kind){const e=entityById(entityId);const options=e?.kind==='unit'?[['rent','إيجار'],['purchase','شراء'],['sale','بيع']]:[['purchase','شراء'],['sale','بيع']];
+ return showModal('إضافة عقد أو عملية',`<p class="hint">حدد نوع العملية المرتبطة بـ ${h(e?.name)}</p><div class="stack">${options.map(([k,v])=>`<button class="btn block" data-action="agreementType" data-id="${h(k)}::${h(entityId)}">${v}</button>`).join('')}</div>`)}
+ const k=a?.kind||kind,entity=entityById(a?.entity_id||entityId),hasPays=a&&state.data.payments.some(p=>p.agreement_id===a.id);
+ showModal((a?'تعديل ':'إضافة ')+({purchase:'شراء',sale:'بيع',rent:'إيجار',other:'عملية مجدولة'}[k]),
+ `<form id="agreement-form" data-id="${h(id||'')}" data-kind="${h(k)}" data-entity="${h(entity?.id||'')}" data-version="${a?.version??0}">
+ <div class="alert">${k==='rent'?'يمكن إنشاء عقد لشهر واحد ودفعة واحدة. رقم العقد نص فقط دون إرفاق مستند.':k==='other'?'عملية مالية مجدولة ضمن «أخرى»، وتُسجل في السداد.':'شراء يُولد سدادًا، وبيع يُولد تحصيلًا. قيمة الأصل نفسها لا تُحسب كحركة نقدية.'}</div>
+ ${entity?`<p class="hint" style="margin:12px 0">الأصل المرتبط: <strong>${h(entity.name)}</strong></p>`:''}
+ ${field('اسم العملية أو العقد','title',a?.title||([k==='rent'?'إيجار':k==='purchase'?'شراء':k==='sale'?'بيع':'قسط',entity?.name||''].join(' ').trim()),'text','',true)}
+ ${k==='rent'?`<div class="grid">${field('رقم عقد الإيجار','contract_number',a?.contract_number,'text','رقم فقط دون رفع العقد')}${field('اسم المستأجر','counterparty',a?.counterparty)}${field('رقم التواصل','phone',a?.phone,'tel')}${field('بداية العقد','start_date',a?.start_date,'date','',true)}${field('نهاية العقد','end_date',a?.end_date,'date','',true)}</div>`:`${field('الطرف المرتبط (اختياري)','counterparty',a?.counterparty)}`}
+ <div class="grid">${field('إجمالي القيمة (ر.س)','total',a?toInput(a.total_cents):'','number','',true)}${field(k==='sale'||k==='rent'?'المحصّل قبل تأسيس المحفظة':'المدفوع قبل تأسيس المحفظة','opening',a?toInput(a.opening_cents):'0','number','لا يُحسب ضمن حركات الشهر')}</div>
+ <div class="grid">${field('عدد الأقساط','count',a?.installment_count||1,'number','1 لدفعة واحدة',true)}<div class="field"><label for="field-frequency">دورية الأقساط</label><select id="field-frequency" name="frequency">${opt([['1','شهريًا'],['3','كل 3 أشهر'],['6','كل 6 أشهر'],['12','سنويًا']],a?.frequency_months||1)}</select></div>${field('موعد أول قسط','first_due_date',a?.first_due_date||state.data.today,'date','',true)}</div>
+ ${field('ملاحظات (اختياري)','note',a?.note,'textarea')}
+ ${hasPays?'<div class="alert warn">بدأ تنفيذ هذا الجدول؛ يمكنك تعديل البيانات الوصفية فقط. لا تُستبدل الأرقام التاريخية بعد التنفيذ.</div>':''}${formButtons()}</form>`);
+ if(hasPays)for(const name of ['total','opening','count','frequency','first_due_date','start_date','end_date']){
+   const input=document.getElementById('agreement-form').elements[name];if(input){input.disabled=true;input.title='ثابت بعد تسجيل دفعات'}
+ }
+}
+function openExpense(){showModal('تسجيل مصروف مباشر',`<div class="alert">مثل مبلغ صُرف على السفر بالفعل؛ يسجل بتاريخ الصرف الفعلي دون جدول أقساط.</div><form id="expense-form">${field('وصف المصروف','title','','text','مصاريف سفر، صيانة...',true)}<div class="grid">${field('المبلغ المصروف فعليًا (ر.س)','amount','','number','',true)}${field('تاريخ الصرف','paid_at',state.data.today,'date','',true)}</div><div class="field"><label for="field-entity_id">ربط المصروف بأصل (اختياري)</label><select id="field-entity_id" name="entity_id">${opt([['','بدون ربط'],...state.data.entities.filter(x=>x.kind!=='worker').map(x=>[x.id,x.name])])}</select></div>${field('ملاحظات','note','','textarea')}${formButtons('تسجيل المصروف')}</form>`)}
+function openOther(){showModal('إضافة في «أخرى»',`<div class="stack"><button class="btn block" data-action="otherScheduled">عملية مجدولة (مثل هاتف بالأقساط)</button><button class="btn block" data-action="otherDirect">مصروف مباشر (تم صرفه فعليًا)</button></div>`)}
+function openQuick(){showModal('إضافة جديدة',`<div class="grid">${[['property','🏢 عقار'],['unit','▤ وحدة'],['car','🚙 سيارة'],['worker','👤 عامل'],['other','↗ أخرى'],['task','☑ مهمة شخصية']].map(([k,label])=>`<button class="btn" data-action="quickType" data-id="${k}">${label}</button>`).join('')}</div>`)}
+function dueForKey(key){const [id,slot]=key.split('::');return state.data.dues.find(d=>d.agreement_id===id&&d.slot===Number(slot))}
+function openPayment(key,paymentId){let d=null,p=null;
+ if(paymentId){p=state.data.payments.find(x=>x.id===paymentId);if(!p)return notify('الحركة غير موجودة؛ حدّث البيانات',true);d={agreement_id:p.agreement_id,slot:p.slot_index,amount_cents:state.data.payment_contexts?.[p.id]?.expected_cents??p.amount_cents};}
+ else d=dueForKey(key);
+ if(!d)return notify('الاستحقاق غير موجود أو تم تنفيذه',true);
+  const a=agreementById(d.agreement_id);if(a?.closed_at)return notify('أعد فتح الاتفاق من التفاصيل قبل تصحيح حركاته.',true);const actual=p?p.amount_cents:d.amount_cents;
+ showModal(p?'تعديل حركة مالية':`تأكيد ${a.direction==='in'?'التحصيل':'السداد'}`,
+ `<div class="alert"><strong>${h(a.title)}</strong><div>موعد الاستحقاق: ${p?fmtDate(state.data.payment_contexts?.[p.id]?.due_date):fmtDate(state.data.dues.find(x=>x.agreement_id===a.id&&x.slot===d.slot)?.due_date)} · المبلغ المتوقع: ${money(d.amount_cents)} ر.س</div></div>
+ <form id="payment-form" data-id="${h(paymentId||'')}" data-agreement="${h(a.id)}" data-slot="${d.slot}" data-expected="${d.amount_cents}" data-version="${a.version}">
+ <div class="grid">${field('المبلغ الفعلي (ر.س)','amount',toInput(actual),'number','',true)}${field('تاريخ التنفيذ الفعلي','paid_at',p?.paid_at||state.data.today,'date','',true)}</div>
+ <div id="overpay" style="display:${Number(actual)>d.amount_cents?'block':'none'}"><div class="alert warn">المبلغ أعلى من القسط المختار. اختر كيف يُعدل النظام جدول الأقساط القادمة.</div><div class="form-choice"><label><input type="radio" name="reschedule_method" value="shorten" ${p?.reschedule_method==='shorten'?'checked':''}> تقليل المدة</label><label><input type="radio" name="reschedule_method" value="spread" ${p?.reschedule_method==='spread'?'checked':''}> تقليل قيمة الأقساط</label></div></div>
+ ${field('ملاحظات','note',p?.note,'textarea')}${formButtons(p?'حفظ التعديل':'تأكيد التنفيذ')}</form>`);
+  const input=modalRoot.querySelector('input[name="amount"]');input.addEventListener('input',()=>{let amount;try{amount=inputCents(input.value)}catch{amount=0}modalRoot.querySelector('#overpay').style.display=amount>d.amount_cents?'block':'none'});
+}
+function openTaskForm(){showModal(isAssistant()?'مهمة شخصية':'مهمة جديدة للمساعد',`<form id="task-form">${field('عنوان المهمة','title','','text','',true)}${field('تاريخ التنفيذ','due_date',state.data.today,'date')}${field('التفاصيل','description','','textarea')}${formButtons('حفظ المهمة')}</form>`)}
+function openTasks(){const list=state.data.tasks;
+ showModal('المهام',`${role()==='manager'?'<div class="row"><p class="hint">المهام التي أسندها المدير للمساعد</p>'+btn('＋ مهمة للمساعد','taskAdd')+'</div>':'<div class="row"><p class="hint">المهام اليدوية</p>'+btn('＋ مهمة شخصية','taskAdd')+'</div>'}<div class="section">${list.length?list.map(taskItem).join(''):'<div class="empty">لا توجد مهام</div>'}</div>`)}
+function openAlerts(){showModal('التنبيهات والمتابعات',`<p class="hint">«تمت المتابعة» يخفي هذا التنبيه بعد مراجعته؛ لا يغيّر بيانات السجل ولا يؤكد حركة مالية.</p><div class="stack"><h3 class="section-title">التنبيهات الإدارية</h3>${state.data.alerts.length?state.data.alerts.map(alertItem).join(''):'<div class="empty">لا توجد تنبيهات</div>'}<h3 class="section-title">الاستحقاقات القريبة</h3>${state.data.dues.filter(x=>x.due_date<=plusDays(state.data.today,14)).map(dueItem).join('')||'<div class="empty">لا توجد استحقاقات قريبة</div>'}</div>`)}
+function historyEntry(a){
+ const types={entity:'بيانات',agreement:'عقد / التزام',payment:'حركة مالية',expense:'مصروف',task:'مهمة',alert:'تنبيه',audit:'سجل العمليات'};
+ let before=null,after=null;try{before=JSON.parse(a.before_json||'null');after=JSON.parse(a.after_json||'null')}catch{}
+ const detail=after||before||{};
+ const when=new Intl.DateTimeFormat('ar-SA-u-ca-gregory',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Riyadh'}).format(new Date(a.created_at));
+ return `<div class="line history-entry"><div class="grow"><div class="line-title">${h(a.action)} <span class="tag">${h(types[a.target_type]||a.target_type)}</span></div>${detail.title||detail.name?`<div>${h(detail.title||detail.name)}</div>`:''}<div class="line-sub overflow">${h(a.actor)}</div><time class="line-sub" datetime="${h(a.created_at)}">${h(when)}</time>${auditChanges(before,after)}</div>${role()==='manager'&&!state.demo?btn('إزالة من العرض','historyHide',a.id,'small danger'):''}</div>`;
+}
+function renderHistoryResults(){
+ const container=document.getElementById('history-results');if(!container)return;
+ const s=state.history;
+ const period=s.from||s.to?`${s.from?'من '+fmtDate(s.from):'من بداية السجل'} — ${s.to?'إلى '+fmtDate(s.to):'حتى آخر عملية'}`:'كل الفترات';
+ container.setAttribute('aria-busy',String(s.loading));
+ container.innerHTML=`<div class="history-summary"><strong>${s.entries.length} عملية معروضة</strong><span>${h(period)} · ${s.sort==='newest'?'الأحدث أولًا':'الأقدم أولًا'}</span></div>
+ ${s.error?`<div class="alert warn" role="alert">${h(s.error)} ${btn('إعادة المحاولة','historyRetry','','small')}</div>`:''}
+ ${s.entries.length?s.entries.map(historyEntry).join(''):s.loading?'<div class="empty">جارٍ تحميل العمليات…</div>':s.error?'':'<div class="empty">لا توجد عمليات ضمن الفترة المحددة.</div>'}
+ ${s.entries.length&&s.loading?'<p class="hint">جارٍ تحميل المزيد…</p>':''}
+ ${s.hasMore&&!s.loading?`<div class="history-more">${btn('عرض المزيد','historyMore','','block')}<p class="hint">توجد عمليات إضافية ضمن الفترة نفسها</p></div>`:''}`;
+}
+async function loadHistory(more=false){
+ const s=state.history;if(more&&(s.loading||!s.cursor))return;
+ const request=++s.request;
+ s.loading=true;s.error='';
+ if(!more){s.entries=[];s.cursor=null;s.hasMore=false}
+ renderHistoryResults();
+ const params=new URLSearchParams({from:s.from,to:s.to,sort:s.sort});
+ if(more)params.set('cursor',s.cursor);
+ try{
+   const result=state.demo?filterHistory(globalThis.mahfazatiPreview.history(),parseHistoryFilters(params)):await api('/api/history?'+params);
+   if(request!==s.request||!document.getElementById('history-form'))return;
+   s.entries=more?[...new Map([...s.entries,...result.entries].map(x=>[x.id,x])).values()]:result.entries;
+   s.cursor=result.next_cursor;s.hasMore=result.has_more;
+ }catch(error){if(request===s.request)s.error=error.message}
+ finally{if(request===s.request){s.loading=false;renderHistoryResults()}}
+}
+function openHistory(){
+ const s=state.history;
+ showModal('سجل العمليات',`<p class="hint">الفلترة حسب وقت تسجيل الإضافة أو التعديل أو الحذف، بتوقيت الرياض، وتشمل يومَي البداية والنهاية.</p>
+ ${state.demo?'<div class="alert history-note">بيانات توضيحية لتجربة الفلترة؛ لا تُحفظ أي تغييرات.</div>':''}
+ <form id="history-form" class="history-form">
+ <div class="grid"><div class="field"><label for="history-period">الفترة</label><select id="history-period" name="period">${opt([['all','كل الفترات'],['today','اليوم'],['week','آخر 7 أيام'],['month','هذا الشهر حتى اليوم'],['year','هذا العام حتى اليوم'],['custom','فترة مخصصة']],s.preset)}</select></div>
+ <div class="field"><label for="history-sort">ترتيب العمليات</label><select id="history-sort" name="sort">${opt([['newest','الأحدث أولًا'],['oldest','الأقدم أولًا']],s.sort)}</select></div></div>
+ <div class="grid"><div class="field"><label for="history-from">من تاريخ</label><input id="history-from" name="from" type="date" min="1000-01-01" max="9999-12-31" value="${h(s.from)}"></div><div class="field"><label for="history-to">إلى تاريخ</label><input id="history-to" name="to" type="date" min="1000-01-01" max="9999-12-31" value="${h(s.to)}"></div></div>
+ <p id="history-validation" class="history-validation" role="alert"></p>
+ <div class="history-actions"><button type="submit" class="btn primary">تطبيق الفترة</button>${btn('إعادة ضبط','historyReset')}</div></form>
+ <p class="hint history-note">يبقى أثر العمليات محفوظًا في سجل التدقيق عند إزالتها من العرض بواسطة المدير.</p>
+ <div id="history-results" aria-live="polite"></div>`);
+ return loadHistory();
+}
+function applyHistoryFilters(form){
+ const data=formData(form),validation=document.getElementById('history-validation');
+ try{
+   const parsed=parseHistoryFilters(new URLSearchParams({from:data.from,to:data.to,sort:data.sort}));
+   Object.assign(state.history,{from:parsed.from,to:parsed.to,sort:parsed.sort,preset:data.period});
+   validation.textContent='';
+   return loadHistory();
+ }catch(error){validation.textContent=error.message}
+}
+function formData(form){return Object.fromEntries(new FormData(form).entries())}
+async function doSave(form){
+ if(form.dataset.saving==='1')return;
+ const id=form.dataset.id,kind=form.dataset.kind,obj=formData(form);let url,method='POST';
+ if(form.id==='entity-form'){if(!id){obj.kind=kind;url='/api/entities'}else{url=`/api/entities/${id}`;method='PATCH'}}
+ else if(form.id==='agreement-form'){if(!id){obj.kind=kind;obj.entity_id=form.dataset.entity||null;url='/api/agreements'}else{url=`/api/agreements/${id}`;method='PATCH'}}
+ else if(form.id==='expense-form')url='/api/expenses';
+ else if(form.id==='task-form')url='/api/tasks';
+ else if(form.id==='payment-form'){
+   obj.slot=Number(form.dataset.slot);
+   if(inputCents(obj.amount)>Number(form.dataset.expected)&&!obj.reschedule_method)throw new Error('اختر طريقة إعادة جدولة المبلغ الزائد');
+   if(!obj.reschedule_method)obj.reschedule_method=null;
+   if(!id)url=`/api/agreements/${form.dataset.agreement}/payments`;else{url=`/api/payments/${id}`;method='PATCH'}
+ }else return;
+ if(id||form.id==='payment-form')obj.expected_version=Number(form.dataset.version??agreementById(form.dataset.agreement)?.version);
+ const fingerprint=JSON.stringify(obj);
+ if(form.dataset.uncertain==='1'&&form.dataset.requestPayload!==fingerprint)throw new Error('لم تتأكد نتيجة الإرسال السابق. أعد البيانات السابقة وأرسلها لتأكيد النتيجة، ثم عدّل السجل المحفوظ.');
+ form.dataset.requestPayload=fingerprint;form.dataset.saving='1';
+ const submit=form.querySelector('button[type=submit]'),fieldset=form.querySelector('fieldset');
+ if(submit)submit.disabled=true;if(fieldset)fieldset.disabled=true;form.setAttribute?.('aria-busy','true');
+ try{
+   await api(url,method,obj);delete form.dataset.uncertain;delete form.dataset.dirty;const returnAgreement=state.agreementReturn;closeModal(true);
+   const refreshed=await reload();if(refreshed&&returnAgreement&&agreementById(returnAgreement)?.status==='active')openAgreementDetails(returnAgreement);
+   const message=form.id==='payment-form'?`تم حفظ ${money(inputCents(obj.amount))} ر.س بتاريخ ${fmtDate(obj.paid_at)}. المتبقي على الاتفاق: ${money(state.data.dues.filter(d=>d.agreement_id===form.dataset.agreement).reduce((sum,d)=>sum+d.amount_cents,0))} ر.س`:'تم الحفظ وتحديث المحفظة وسجل العمليات';
+   notify(refreshed?message:'تم الحفظ. تعذر تحديث العرض؛ اضغط تحديث البيانات.',!refreshed);
+ }catch(error){if(error.uncertain)form.dataset.uncertain='1';else delete form.dataset.uncertain;throw error}
+ finally{delete form.dataset.saving;if(submit)submit.disabled=false;if(fieldset)fieldset.disabled=false;form.setAttribute?.('aria-busy','false')}
+}
+document.addEventListener('submit',async e=>{
+ if(!e.target.matches('#modal form'))return;e.preventDefault();
+ if(e.target.id==='history-form')return applyHistoryFilters(e.target);
+ const errorBox=e.target.querySelector('.form-error');if(errorBox)errorBox.innerHTML='';
+ try{await doSave(e.target)}catch(err){
+   if(errorBox){errorBox.innerHTML=`${h(err.message)}${err.code===409?'<div>'+btn('تحديث البيانات وإغلاق النموذج','refreshForm','','small')+'</div>':''}`;errorBox.focus()}else notify(err.message,true);
+ }
+});
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('[data-action]');if(!b)return;
+ const action=b.dataset.action,id=b.dataset.id;if(b.dataset.busy==='1')return;
+ b.dataset.busy='1';if(['backup','entityDelete','agreementCancel','agreementClose','agreementReopen','payVoid','expenseVoid','taskToggle','alertDismiss','historyHide'].includes(action))b.disabled=true;
+ try{
+  if(action==='reload')return await reload();
+  if(action==='refreshForm'){closeModal(true);return await reload()}
+  if(action==='moreDues'){state.visibleDues+=20;render();return}
+  if(action==='dueScope'){state.dueScope=id;render();return}
+  if(action==='entityDetails')return openEntityDetails(id);
+  if(action==='expenseDetails')return openExpenseDetails(id);
+  if(action==='agreementDetails')return openAgreementDetails(id);
+  if(action==='statement')return openStatement();
+  if(action==='statementCSV')return exportStatement();
+  if(action==='statementPrint'){if(!state.statement)return;document.body.classList.add('printing-statement');globalThis.addEventListener('afterprint',()=>document.body.classList.remove('printing-statement'),{once:true});try{globalThis.print()}catch(error){document.body.classList.remove('printing-statement');throw error}return}
+  if(action==='modalClose'){closeModal();return}
+  if(action==='page'){state.page=id;state.filter='all';render();return}
+  if(action==='kind'){state.kind=id;state.search='';render();return}
+  if(action==='dataMode'){state.dataMode=state.dataMode==='table'?'cards':'table';render();return}
+  if(action==='clearSearch'){state.search='';render();document.getElementById('data-search')?.focus();return}
+  if(action==='filter'){state.filter=id;render();return}
+  if(action==='quickadd')return openQuick();
+  if(action==='quickType'){if(id==='other')return openOther();if(id==='task')return openTaskForm();return openEntityForm(id)}
+  if(action==='entityAdd'){const [kind,parent]=id.split('::');return openEntityForm(kind,null,parent||null)}
+  if(action==='entityEdit'){const ent=entityById(id);return openEntityForm(ent.kind,id)}
+  if(action==='otherAdd')return openOther();
+  if(action==='otherScheduled')return openAgreementForm('other');
+  if(action==='otherDirect')return openExpense();
+  if(action==='agreementAdd')return openAgreementForm(null,id);
+  if(action==='agreementType'){const [kind,entityId]=id.split('::');return openAgreementForm(kind,entityId)}
+  if(action==='agreementEdit'){return openAgreementForm(null,null,id)}
+  if(action==='payConfirm')return openPayment(id,null);
+  if(action==='payEdit')return openPayment(null,id);
+  if(action==='taskAdd')return openTaskForm();
+  if(action==='tasks')return openTasks();
+  if(action==='alerts')return openAlerts();
+  if(action==='history')return await openHistory();
+  if(action==='historyMore')return await loadHistory(true);
+  if(action==='historyRetry')return await loadHistory(state.history.entries.length>0&&!!state.history.cursor);
+  if(action==='historyReset'){Object.assign(state.history,{from:'',to:'',sort:'newest',preset:'all'});return await openHistory()}
+  if(action==='backup'){
+    if(state.demo)throw new Error('لا توجد نسخة احتياطية في المعاينة');
+    if(!confirm('النسخة الاحتياطية تحتوي على بيانات مالية وشخصية حساسة. احفظ الملف في مكان آمن. هل تريد تصديرها؟'))return;
+    const res=await fetch('/api/backup');if(!res.ok)throw new Error('فشل تصدير النسخة الاحتياطية');
+    const blob=await res.blob(),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=`mahfazati-backup-${state.data.today}.json`;a.click();URL.revokeObjectURL(u);notify('تم تصدير ملف النسخة الاحتياطية');return;
+  }
+  const apiAction=async(url,method,payload,message)=>{await api(url,method,payload);const returnAgreement=state.agreementReturn;closeModal(true);const refreshed=await reload();if(refreshed&&returnAgreement&&agreementById(returnAgreement)?.status==='active')openAgreementDetails(returnAgreement);notify(refreshed?message:message+'؛ تعذر تحديث العرض. اضغط تحديث البيانات.',!refreshed)};
+  if(action==='entityDelete'){if(confirm('أرشفة السجل وإزالته من القوائم؟ يبقى تاريخه محفوظًا. يجب معالجة الوحدات والجداول النشطة المرتبطة أولًا.'))await apiAction('/api/entities/'+id,'DELETE',{expected_version:entityById(id).version},'تمت أرشفة السجل');return}
+  if(action==='agreementCancel'){if(confirm('إلغاء الجدول؟ ستُزال استحقاقاته المستقبلية ويبقى أثر الإلغاء في السجل.'))await apiAction('/api/agreements/'+id,'DELETE',{expected_version:agreementById(id).version},'تم إلغاء الجدول');return}
+  if(action==='agreementClose'){if(confirm('إغلاق الاتفاق المسدد؟ تبقى حركاته محفوظة، ويلزم إعادة فتحه قبل أي تصحيح.'))await apiAction('/api/agreements/'+id+'/close','POST',{expected_version:agreementById(id).version},'تم إغلاق الاتفاق مع حفظ حركاته');return}
+  if(action==='agreementReopen'){if(confirm('إعادة فتح الاتفاق؟ يجب أن يكون أصله متاحًا وألا يتعارض الإيجار مع عقد آخر.'))await apiAction('/api/agreements/'+id+'/reopen','POST',{expected_version:agreementById(id).version},'تمت إعادة فتح الاتفاق');return}
+  if(action==='payVoid'){if(confirm('حذف الحركة؟ سيعاد حساب جميع الأقساط المرتبطة تلقائيًا.'))await apiAction('/api/payments/'+id,'DELETE',{expected_version:agreementById(state.data.payments.find(p=>p.id===id).agreement_id).version},'حُذفت الحركة وأعيد حساب الجدول');return}
+  if(action==='expenseVoid'){if(confirm('حذف المصروف المباشر؟'))await apiAction('/api/expenses/'+id,'DELETE',{expected_version:state.data.expenses.find(e=>e.id===id).version},'حُذف المصروف من الحسابات');return}
+  if(action==='taskToggle'){const task=state.data.tasks.find(x=>x.id===id);await apiAction('/api/tasks/'+id,'PATCH',{state:task.state==='done'?'open':'done',expected_version:task.version},'تم تحديث المهمة');return}
+  if(action==='alertDismiss'){await apiAction('/api/alerts/dismiss','POST',{key:id},'تمت متابعة التنبيه وإخفاؤه من القائمة');return}
+  if(action==='historyHide'){if(confirm('إزالة العملية من سجل العرض فقط؟ يبقى أثرها في سجل التدقيق المحمي.')){await api('/api/history/'+id+'/hide','POST',{});await loadHistory();notify('أُزيلت العملية من العرض مع حفظ أثرها')}return}
+ }catch(err){notify(err.message,true)}finally{delete b.dataset.busy;b.disabled=false}
+});
+document.addEventListener('input',e=>{
+ const form=e.target.closest('form');if(form&&form.id!=='history-form')form.dataset.dirty='1';
+ if(e.target.id==='data-search'){
+  state.search=e.target.value;render();
+ }
+});
+document.addEventListener('change',async e=>{
+ const formChanged=e.target.closest('form');if(formChanged&&formChanged.id!=='history-form')formChanged.dataset.dirty='1';
+ if(e.target.id==='month'){if(!/^[1-9]\d{3}-(0[1-9]|1[0-2])$/.test(e.target.value)){e.target.value=state.month;return}await reload(e.target.value);return}
+ if(!e.target.closest('#history-form'))return;
+ const form=e.target.form;
+ if(e.target.id==='history-period'){
+   if(e.target.value==='custom'){document.getElementById('history-from').focus();return}
+   const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Riyadh'});
+   const range=historyPeriod(e.target.value,today);
+   form.elements.from.value=range.from;form.elements.to.value=range.to;
+   await applyHistoryFilters(form);
+ }else if(e.target.id==='history-sort'){await applyHistoryFilters(form)}
+ else if(['history-from','history-to'].includes(e.target.id)){
+   form.elements.period.value='custom';
+   document.getElementById('history-validation').textContent='اضغط «تطبيق الفترة» لتحديث النتائج.';
+ }
+});
+modalRoot.addEventListener('click',e=>{if(e.target===modalRoot)closeModal()});
+document.addEventListener('keydown',e=>{
+ if(modalRoot.hidden)return;
+ if(e.key==='Escape'){e.preventDefault();closeModal()}
+ if(e.key==='Tab'){
+  const items=[...modalRoot.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],summary,[tabindex="0"]')].filter(el=>el.getClientRects().length);
+  const first=items[0],last=items.at(-1);if(!first){e.preventDefault();return}
+  if(!items.includes(document.activeElement)){e.preventDefault();(e.shiftKey?last:first).focus();return}
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+ }
+});
+
+reload();
+</script></body></html>

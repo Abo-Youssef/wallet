@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>محفظتي — تقرير التطوير 1.3</title>
+<style>
+:root{font-family:Tahoma,Arial,sans-serif;color:#183048;background:#f4f7fa;line-height:1.9}*{box-sizing:border-box}body{margin:0}main{max-width:1050px;margin:32px auto;padding:36px;background:#fff;border:1px solid #dce5ed;border-radius:16px}header{padding-bottom:24px;border-bottom:2px solid #183c63}.eyebrow{margin:0;color:#51677c;font-size:13px}h1{font-size:30px;margin:8px 0 12px;color:#183c63;line-height:1.5}h2{font-size:21px;color:#183c63;margin:32px 0 12px}p,li{font-size:15px}p{margin:12px 0}a{color:#245680}a:focus-visible{outline:3px solid #cb8b22;outline-offset:4px}nav{display:flex;gap:12px 22px;flex-wrap:wrap;margin-top:18px}.status{display:inline-block;padding:3px 12px;border:1px solid #b5c8d8;border-radius:6px;background:#eef4fa;font-size:13px}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dce5ed;padding:13px;text-align:right;vertical-align:top}th{background:#eef4fa}td:first-child{font-weight:bold;width:22%}code{direction:ltr;unicode-bidi:isolate;display:inline-block;font:13px/1.6 Consolas,monospace;background:#f1f5f9;padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}pre{direction:ltr;text-align:left;white-space:pre-wrap;background:#f1f5f9;border:1px solid #dce5ed;padding:14px;border-radius:6px}pre code{padding:0}.note{padding:14px 18px;border-right:4px solid #527b9f;background:#f2f6fa}li{margin:9px 0}footer{border-top:1px solid #dce5ed;margin-top:30px;padding-top:14px;color:#51677c;font-size:13px}@media(max-width:650px){main{margin:0;padding:22px 16px;border:0;border-radius:0}h1{font-size:25px}table{min-width:650px}}@media print{:root{background:#fff}main{margin:0;padding:0;max-width:none;border:0}nav{display:none}h2{break-after:avoid}tr,.note{break-inside:avoid}a{color:inherit}}
+</style>
+</head>
+<body><main>
+<header>
+<p class="eyebrow">محفظتي · 15 أكتوبر 2026</p>
+<h1>تقرير التطوير 1.3</h1>
+<span class="status">87 اختبارًا آليًا ناجحًا · تحقق محلي ومتصفح فعلي · لم يُنفّذ النشر</span>
+<p>شملت الجولة تحليل المصدر والرحلات المالية، وإعادة إنتاج عيوب محددة، ثم تطوير سير العمل والواجهة. التسليم يحتوي على المصدر ومعاينة مستقلة للقراءة فقط، ومشغّل محلي يتيح تجربة الحفظ على بيانات اصطناعية مؤقتة.</p>
+<nav aria-label="ملفات التسليم"><a href="معاينة_تفاعلية.html">فتح المعاينة دون حفظ</a><a href="README_AR.md">دليل التشغيل والترقية</a><a href="تقرير_المراجعة.html">مراجعة 1.2 التاريخية</a></nav>
+</header>
+
+<section aria-labelledby="findings">
+<h2 id="findings">ما كشفه التحليل وما تغيّر</h2>
+<p>بدأ الفحص من نتائج غير مرغوبة: تغيّر بيانات حركة عند إلغائها، واجتياز نسخة احتياطية غير متسقة، وبقاء أصل مسدد مرتبطًا باتفاق مفتوح. ثم جرى تتبع كل حالة عبر الواجهة وواجهة API والحساب وقاعدة البيانات. فُصلت العيوب المثبتة عن الوظائف المضافة.</p>
+<div class="tablewrap" tabindex="0" role="region" aria-label="نتائج التحليل والتطوير؛ يمكن التمرير أفقيًا"><table>
+<thead><tr><th scope="col">المجال</th><th scope="col">الملاحظة</th><th scope="col">السلوك في 1.3</th></tr></thead><tbody>
+<tr><td>سلامة الحركة الملغاة</td><td>أمكن لطلب حذف يحمل رقم قسط مختلف تغيير القسط في السجل الملغى. الرصيد النشط لم يكن يتأثر، لكن بيانات الحركة التاريخية كانت تتغير.</td><td>الإلغاء يحفظ حقول الحركة الأصلية، مع اختبار رجعي لهذا الطلب.</td></tr>
+<tr><td>فحص النسخ</td><td>الفحص لم يكشف استحقاقات إيجار خارج مدة العقد، وكان التحويل الضمني يسمح بمبالغ <code>null</code> في الاتفاق.</td><td>فحص المبالغ وحدود أول وآخر استحقاق وقواعد الإغلاق، مع الحفاظ على صيغ التصدير القديمة.</td></tr>
+<tr><td>دورة حياة الاتفاق</td><td>كانت الأرشفة تتوقف عند الاتفاق النشط حتى بعد تسوية رصيده؛ هذه فجوة استخدام موثقة في النسخة السابقة.</td><td>إغلاق يدوي بعد السداد، وبعد نهاية المدة للإيجار. إعادة الفتح تتحقق من الأصل والتداخل. تبويب للمغلقة، مع حفظ الحركات والتدقيق وأسماء الأصول المؤرشفة في التفاصيل والكشوف.</td></tr>
+<tr><td>الوصول إلى المعلومات</td><td>البحث والتفاصيل والتنبيهات احتاجت مسارًا أوضح للوصول إلى السجل المالي كاملًا.</td><td>بحث عربي موحد، وحركات الاتفاق عبر جميع الأشهر، وروابط التنبيهات إلى السجل أو العقد المرتبط.</td></tr>
+<tr><td>مراجعة الشهر</td><td>احتاجت المراجعة إلى كشف قابل للمشاركة يميز الاستحقاق عن النقد المنفذ.</td><td>كشف للطباعة وCSV للحركات السارية خلال الشهر. الصافي يوضح التدفق النقدي، ولا يُعرض كرصيد حساب بنكي.</td></tr>
+<tr><td>المبالغ والواجهة</td><td>مقارنة المبلغ في الواجهة يجب أن تطابق دقة محرك الحساب، وأن تبقى المهام واضحة على الشاشات الصغيرة.</td><td>مقارنة بالهللات الصحيحة، ومساحة عربية هادئة من اليمين إلى اليسار، ونصوص وعناصر مُوسّطة داخل البطاقات مع الهوية الكحلية، وتنظيم أوضح للرئيسية والجداول والتفاصيل وحالات الاتصال.</td></tr>
+</tbody></table></div>
+</section>
+
+<section aria-labelledby="workflow">
+<h2 id="workflow">قواعد العمل</h2>
+<ul>
+<li>المدير يراجع البيانات والكشوف ويتابع المهام ويصدّر النسخة الكاملة ويزيل بنودًا من عرض السجل. المساعد ينفذ العمليات المالية ويصححها ويغلق الاتفاقات ويؤرشف الأصول.</li>
+<li>الإغلاق يتطلب رصيدًا متبقيًا صفرًا؛ وللإيجار يبدأ السماح به في اليوم التالي لنهاية العقد بتوقيت الرياض. يلزم إعادة الفتح قبل تصحيح الحركات.</li>
+<li>إعادة الفتح ترفض الأصل المؤرشف أو عقد الإيجار المتداخل. الأرشفة تتطلب انتهاء الروابط المفتوحة وعدم وجود وحدات غير مؤرشفة. لا يوجد مسار لإلغاء أرشفة الأصل في النسخة الحالية.</li>
+<li>الحركات النقدية تبقى في أشهر تنفيذها بعد إغلاق الاتفاق. القيم الافتتاحية قبل تأسيس المحفظة مستبعدة من النقد الشهري.</li>
+<li>الكشف يعكس آخر بيانات محمّلة بعد التصحيحات. CSV يضم الحركات المنفذة خلال الشهر؛ النسخة الاحتياطية JSON للمدير تشمل البيانات الكاملة.</li>
+</ul>
+</section>
+
+<section aria-labelledby="verification">
+<h2 id="verification">ما جرى التحقق منه</h2>
+<p><strong>اجتازت النسخة 87 اختبارًا آليًا محليًا.</strong> شملت الحساب بالهللة، والتوزيع والتواريخ، وفحص النسخ، والترحيلات، والصلاحيات، والتزامن وإعادة المحاولة، ودورة إغلاق الاتفاق، والبحث والكشف والتصدير.</p>
+<p>جرت مراجعة فعلية في المتصفح لدوري المدير والمساعد عند عروض <strong>1440 و768 و390 بكسل</strong>، مع اتجاه عربي وتوسيط العناصر ودون تجاوز أفقي للصفحة في العروض المفحوصة. شملت رحلة الاختبار إضافة التزام بقيمة 1.10 ريال وسداده بالمبلغ نفسه، والبحث عن «١١٠» بكتابة «110»، وفتح التفاصيل وإغلاق الاتفاق مع بقاء حركته، ثم إيجاده ضمن الاتفاقات المغلقة.</p>
+<p>فُحص المشغّل المحلي أيضًا: بذر البيانات عبر API، وبدء قاعدة فارغة، والحفظ وإعادة المحاولة والإلغاء، ورفض مصدر الطلب والصلاحية غير المناسبين، ومنع تجاوز مجلد الملفات العامة.</p>
+<p>نجح تنزيل ملف CSV من زر الواجهة فعليًا، وظهر تأكيد التصدير. لقطات النسخة الحالية: <a href="preview/manager-desktop-v13.jpg">المدير على سطح المكتب</a>، <a href="preview/assistant-desktop-v13.jpg">المساعد على سطح المكتب</a>، <a href="preview/manager-mobile-v13.jpg">المدير على الجوال</a>، <a href="preview/statement-mobile-v13.jpg">الكشف على الجوال</a>.</p>
+<p>لإعادة تشغيل المجموعة الكاملة: <code>npm test</code>. مجموعة <code>review:probes</code> مخصصة لإصلاحات تاريخية ولا تستبدل الاختبارات الكاملة.</p>
+<p class="note">اختبارات الخادم تستخدم SQLite وتوقيعات دخول محلية، وبعض اختبارات الواجهة تستخدم مستندًا مبسطًا. فحص المتصفح لا يغطي جميع الأجهزة والمتصفحات، ولم يُختبر Cloudflare Access أو D1 على حساب فعلي.</p>
+</section>
+
+<section aria-labelledby="try">
+<h2 id="try">تجربة النسخة</h2>
+<p>افتح المعاينة للقراءة دون تثبيت. لتجربة الحفظ، استخدم Node.js 24 أو أحدث وشغّل من مجلد المشروع:</p>
+<pre><code>node scripts/dev-local.mjs</code></pre>
+<p>ثم افتح <a href="http://127.0.0.1:43128">127.0.0.1:43128</a> وبدّل الدور من الشريط العلوي. لا يحتاج المسار إلى تثبيت حزم أو حساب سحابي. لتجربة محفظة فارغة أضف <code>--empty</code>.</p>
+<p class="note">بيئة اختبار محلية ببيانات اصطناعية فقط. توقف الخادم يمحو تغييرات التجربة. مفاتيح الدخول مؤقتة وأسماء الحسابات تحت <code>example.test</code>، ولا يجري إرسال بيانات إلى خدمة خارجية.</p>
+</section>
+
+<section aria-labelledby="release">
+<h2 id="release">ما يلزم قبل الاستخدام الفعلي</h2>
+<ol>
+<li>تحديد قاعدة D1 والنطاق والحسابين الحقيقيين، وتهيئة Cloudflare Access وأسرار التطبيق.</li>
+<li>نسخ البيانات القائمة وفحصها، وتجربة الترحيلات في بيئة منفصلة. الترحيل <code>0004_agreement_closure.sql</code> يضيف بيانات الإغلاق ويحدث حماياته؛ تبقى الاتفاقات السابقة مفتوحة.</li>
+<li>اختبار الدخول والصلاحيات والحفظ المتزامن والتصدير بعد النشر، ومطابقة إجماليات المحفظة مع سجلاتها.</li>
+<li>اختبار الاستعادة في بيئة منفصلة وترتيب حفظ النسخ. JSON غير مشفر؛ لا توجد استعادة تلقائية أو نسخ خارجي مجدول.</li>
+</ol>
+<p>ما زال التطبيق لمحفظة صغيرة مشتركة بين الحسابين ويحمّل معظم بياناتها مجتمعة. التنبيهات داخل التطبيق، دون ربط بنكي أو رسائل خارجية. يلزم قياس الأداء على حجم البيانات الفعلي.</p>
+<p class="note">لم يحدث نشر أو ربط بحساب Cloudflare حقيقي أو تعديل لبيانات المستخدم. نجاح الفحوص المحلية لا يُعد إثباتًا لاجتياز بيئة الإنتاج.</p>
+</section>
+<footer>هذا التقرير يصف تطوير 1.3. حُفظت وثائق مراجعة 1.2 كمرجع تاريخي، مع تمييزها عن دليل النسخة الحالية.</footer>
+</main></body>
+</html>

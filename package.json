@@ -1,0 +1,24 @@
+{
+  "name": "mahfazati-v1",
+  "version": "1.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:local": "node scripts/dev-local.mjs",
+    "dev:local:empty": "node scripts/dev-local.mjs --empty",
+    "deploy": "wrangler deploy",
+    "migrate:local": "wrangler d1 migrations apply mahfazati-db --local",
+    "migrate:remote": "wrangler d1 migrations apply mahfazati-db --remote",
+    "test": "node --test tests/*.test.mjs",
+    "preview:build": "node scripts/build-preview.mjs",
+    "review:probes": "node scripts/review-probes.mjs",
+    "backup:check": "node scripts/check-backup.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
