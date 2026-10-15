@@ -1,29 +1,29 @@
-# محفظتي: مساحة هادئة
+# محفظتي 2.0: إيقاع واضح
 
 ## Approved direction
 
-اعتمد المستخدم الاتجاه الثاني «مساحة هادئة» بتاريخ 15 أكتوبر 2026، وأضاف شرط RTL ومحاذاة النصوص إلى منتصف البطاقات. المرجع البصري المولّد عالي الدقة هو اتجاه التنفيذ المعتمد؛ لا يحتاج المنتج أصول صور داخل الواجهة.
+الاتجاه النهائي المعتمد لنسخة React 2.0 هو الاتجاه الأول **«إيقاع واضح»**. يحل هذا القرار محل «مساحة هادئة» الذي استخدمته نسخة 1.3، مع استمرار شرط RTL ومحاذاة نصوص وقيم بطاقات الملخص إلى الوسط. المرجع البصري يوجّه التركيب؛ الواجهة منفذة بمكونات حقيقية ولا تستخدم صورة شاشة أو نصًا مصورًا.
 
 ## Scene and theme
 
-المساعد يراجع ويُدخل بيانات من مكتب مضاء عبر شاشة كمبيوتر، والمدير يراجع المحفظة خلال اليوم عبر هاتفه. سطح فاتح دافئ قليلًا، كتابة فحمية، ولون برتقالي محروق محدود للأفعال الأساسية والحالة النشطة. ألوان دلالية خضراء وحمراء للمبالغ والحالات مع نصوص شارحة.
+المساعد يراجع ويُدخل بيانات من شاشة كمبيوتر، والمدير يراجع المحفظة خلال اليوم عبر هاتفه. سطح فاتح بلمسة بنفسجية خفيفة، كتابة داكنة، وشريط جانبي برقوقي عميق يوضح أقسام العمل على الكمبيوتر. اللون البرقوقي يميز الفعل الأساسي؛ الأخضر والمرجاني يوضحان الحالات المالية مع نصوص شارحة.
 
 ## Color strategy
 
-Restrained. Design tokens use OKLCH. Surface near-white with warm-gray tint, dark neutral ink, burnt-orange primary, sage success, rust warning, and muted red danger. Brand color carries controls rather than large decorative surfaces.
+الألوان معرفة عبر OKLCH في `frontend/styles.css`: سطح قريب من الأبيض، حبر داكن، برقوقي للأفعال والشريط الجانبي، بنفسجي فاتح للخلفيات المساعدة، أخضر للإنجاز، ومرجاني للتنبيه والخطر. لا يعتمد فهم الحالة على اللون وحده.
 
 ## Typography
 
-System Arabic-capable sans stack: Segoe UI, Tahoma, Arial, sans-serif. Fixed rem scale, generous Arabic line-height, tabular numeric values. Main content 1rem, supporting copy 0.875rem, section headings 1.125rem, page headings around 1.75rem. Card text, labels and numeric values are centered. Numeric/date fields preserve LTR isolation inside RTL documents.
+IBM Plex Sans Arabic بأوزان 400 و500 و600 و700، مستضاف ضمن حزمة التطبيق عبر Fontsource. تتدرج أحجام النص والعناوين مع مسافات أسطر مناسبة للعربية. قيم ونصوص بطاقات الملخص مركزية؛ تسميات الحقول وصفوف القوائم والجداول تتبع قراءة RTL. الأرقام والتواريخ معزولة باتجاه مناسب داخل المستند العربي.
 
 ## Layout
 
-Desktop uses a horizontal top navigation and work area, not a side rail. Assistant work list is paired with a concise summary; manager's monthly statement groups scheduled obligations separately from actual cash flows. Mobile navigation moves to the bottom, content becomes one column, and cards remain centered. Lists and separators do most grouping; avoid nested decorative cards.
+من عرض 900 بكسل يظهر شريط جانبي ثابت يمين الشاشة، وتتجاور قائمة عمل المساعد مع لوحة تفاصيل عند توفر المساحة. شاشة المدير تفصل استحقاقات الشهر عن حركة النقد الفعلية، ثم تعرض ما يحتاج متابعة. تحت 900 بكسل ينتقل التنقل إلى أسفل الشاشة وتترتب الأقسام في عمود واحد. يتقدم ملخص النقد على المهام والأصول في ترتيب الجوال. تدعم الجداول التمرير داخل حاويتها دون توسيع الصفحة.
 
 ## Controls and states
 
-Minimum comfortable 44px touch controls, explicit labels, strong focus outlines. Same visual vocabulary for buttons and filters across the app. Modals are reserved for existing editing/detail flows, use accessible headings, focus trapping, background inertness and focus return. Empty/error/loading/confirmation states carry useful actions. No invented dates, totals or timeline hours.
+أهداف لمس مريحة، وتسميات صريحة، وتركيز مرئي. تستخدم الأزرار والمرشحات لغة واحدة، وتأتي الأيقونات من Lucide. النوافذ مبنية على `dialog` بعناوين واضحة، وإدارة للتركيز، وتأكيد عند الخروج من نموذج معدل. تتضمن حالات الفراغ والخطأ والتحميل خطوات مفيدة، وتراعي الحركة المخفضة. لا تعرض تواريخ أو أرقامًا أو وظائف غير مستندة إلى بيانات التطبيق.
 
 ## Reference ingredients
 
-Printed agenda hierarchy, mobile Settings list clarity, horizontal toolbar organization. The approved mock's warm gray background, orange action control, horizontal desktop navigation, compact mobile statement and agenda order carry into the implementation. Raster text, sample people, invented settings controls and mock numerical inconsistencies do not.
+تسلسل أجندة العمل، ووضوح كشوف الالتزامات، وشريط جانبي يثبّت موقع المستخدم، ومؤشرات مالية مقتضبة. المرجع المعتمد «إيقاع واضح» يحدد الهوية؛ الحسابات ومحتوى النماذج والصلاحيات مصدرها التطبيق الحقيقي. لقطات `preview/*v13*` و`preview/legacy` وتقارير 1.3 تاريخية ولا تعد مرجعًا بصريًا لهذه النسخة.

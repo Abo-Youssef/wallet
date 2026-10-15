@@ -1,10 +1,10 @@
-# خطة تنفيذ محفظتي 1.3
+# خطة تنفيذ محفظتي 2.0 — React
 
-Status: confirmed by user on 2026-10-15, direction 2 «مساحة هادئة», RTL and centered card text.
+Status: final direction 1 «إيقاع واضح», React + Vite, RTL and centered card text. This supersedes the earlier 1.3 direction «مساحة هادئة».
 
 ## Outcome and scope
 
-تطوير متكامل للواجهة الحالية والوظائف المرتبطة بالمراجعة والتنفيذ، ضمن Cloudflare Workers + D1 وواجهة JavaScript خفيفة. المساعد على الكمبيوتر أساسًا، والمدير على الجوال أساسًا، مع دعم كليهما لكلا الجهازين. نسخة مصدر عاملة ومعاينة واختبارات؛ النشر الفعلي غير منفذ ضمن هذه المرحلة.
+إعادة بناء الواجهة بمكونات React وVite، مع تطوير الوظائف المرتبطة بالمراجعة والتنفيذ والمحافظة على Cloudflare Workers + D1 ومحرك الحساب والصلاحيات الحالية. المساعد على الكمبيوتر أساسًا، والمدير على الجوال أساسًا، مع دعم كليهما لكلا الجهازين. مخرجات المرحلة مصدر عامل ومعاينة واختبارات؛ النشر الفعلي غير منفذ.
 
 ## Primary actions
 
@@ -18,10 +18,12 @@ Status: confirmed by user on 2026-10-15, direction 2 «مساحة هادئة», 
 - كشف شهري للطباعة وتصدير الحركات CSV.
 - إغلاق صريح للاتفاق المسدد، وإعادة فتحه ضمن ضوابط الأصل والإيجار، ثم أرشفة الأصل.
 - فحص نسخ احتياطية مطابق لضوابط الجدولة والإغلاق.
+- فصل الواجهة إلى صفحات ومكونات ونماذج قابلة للاختبار، مع استمرار API نفسه.
+- بناء إنتاج مستقل إلى `dist`، ومعاينة React مستقلة لا تضمّن بياناتها في الإنتاج.
 
 ## Interaction and states
 
-Navigation and filters preserve logical keyboard focus. Financial forms label expected/actual values, required fields, errors and saved outcomes. Loading a new month must not label old totals with it. Search has clear empty results and reset. The original read-only standalone preview stays explicitly illustrative; a separate local review runner can exercise real API mutations with disposable synthetic data.
+يدعم التنقل والمرشحات التركيز المنطقي بلوحة المفاتيح. توضح النماذج المالية القيمة المتوقعة والفعلية والحقول المطلوبة والأخطاء ونتيجة الحفظ. تحميل شهر جديد لا يعيد تسمية أرقام الشهر السابق باسمه. البحث يوضح النتائج الفارغة وإعادة الضبط. النوافذ تدير التركيز وتحمي المدخلات المعدلة عند الإغلاق. المعاينة المستقلة توضيحية ولا تحفظ، بينما يختبر المشغّل المحلي API الفعلي ببيانات مؤقتة.
 
 ## Content and boundaries
 
@@ -29,12 +31,12 @@ Navigation and filters preserve logical keyboard focus. Financial forms label ex
 
 ## Visual direction and image decisions
 
-Generated two high-fidelity direction boards using built-in image generation. User chose board 2 and required centered card text. The approved high-fidelity board is the visual reference for this existing-app redesign; no further direction exploration or raster UI assets are necessary. Follow DESIGN.md; correct mock numerical labels and render all text as semantic HTML.
+الاتجاه النهائي «إيقاع واضح» يستخدم سطحًا فاتحًا وشريطًا جانبيًا برقوقيًا عميقًا للكمبيوتر وتنقلًا سفليًا للجوال. خط IBM Plex Sans Arabic محلي وأيقونات Lucide؛ نصوص وقيم البطاقات مركزية ضمن RTL. اتبع `DESIGN.md`، واجعل جميع النصوص عناصر HTML فعلية والأرقام من محرك الحساب. قرار الاتجاه النهائي يحل محل اختيار النسخة السابقة ولا يغيّر تاريخ تقاريرها المحفوظة.
 
 ## Implementation references
 
-impeccable product, spatial-design, typography, responsive-design, interaction-design and ux-writing references. Validate mobile narrow, tablet/small laptop and wide desktop in the browser, then fix material findings.
+مراجع impeccable للمنتج والتركيب والخطوط والاستجابة والتفاعل والكتابة. تحقق من الجوال الضيق والشاشة المتوسطة والكمبيوتر في متصفح فعلي، إلى جانب اختبارات Vitest وTesting Library وNode. مصدر الواجهة في `frontend`، وبناء الإنتاج في `dist` مع `publicDir:false` لأن `public` يحتوي وحدات مشتركة وليس أصول الواجهة. تبقى الواجهة السابقة في تاريخ Git والنسخة الأصلية 1.3 فقط.
 
 ## Open questions
 
-None blocking local implementation. Real Cloudflare account configuration and production acceptance remain separate from local source verification.
+لا توجد أسئلة تمنع تنفيذ المصدر محليًا. إعداد حساب Cloudflare ومعرّف D1 وAccess وقبول النسخة المنشورة ما زال مطلوبًا قبل الاستخدام الحقيقي. معرّف D1 في المصدر قيمة مكانية ولم يُنفّذ نشر إنتاجي.

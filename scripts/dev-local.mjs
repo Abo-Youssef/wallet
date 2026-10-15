@@ -1,6 +1,6 @@
 /**
- * Disposable browser-review server. Node 24+, no packages or external services.
- * This file is never a production entry point: only public/ and src/worker.mjs
+ * Disposable browser-review server. Node 24+, with a completed Vite build.
+ * This file is never a production entry point: only dist/ and src/worker.mjs
  * are deployed by Wrangler. Every run starts a fresh in-memory database.
  */
 import {createServer} from 'node:http';
@@ -20,7 +20,7 @@ if(args.some(arg=>arg!=='--empty'))throw new Error('Only --empty and --help are 
 const portText=process.env.PORT??'43128';
 if(!/^\d+$/.test(portText)||Number(portText)<1||Number(portText)>65535)throw new Error('PORT must be an integer from 1 to 65535');
 const port=Number(portText),origin=`http://127.0.0.1:${port}`;
-const publicRoot=await realpath(fileURLToPath(new URL('../public/',import.meta.url)));
+const publicRoot=await realpath(fileURLToPath(new URL('../dist/',import.meta.url))).catch(()=>{throw new Error('The React build is missing. Run npm run build before starting the local server.')});
 const sqlite=new DatabaseSync(':memory:');
 sqlite.exec('PRAGMA foreign_keys=ON');
 const migrationsRoot=new URL('../migrations/',import.meta.url);
@@ -75,10 +75,10 @@ function currentRole(cookie=''){
   return cookie.split(';').some(part=>part.trim()==='mahfazati_review_role=assistant')?'assistant':'manager';
 }
 function banner(role){
-  const link=(value,label)=>`<a href="/__review/role?as=${value}" style="color:#fff;text-decoration:underline;font-weight:${role===value?'800':'400'}"${role===value?' aria-current="true"':''}>${label}</a>`;
-  return `<aside id="local-review-banner" role="note" dir="rtl" style="padding:12px 18px;background:#183c63;color:#fff;font:14px/1.6 system-ui,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:8px 20px;flex-wrap:wrap"><strong>بيئة اختبار محلية · بيانات توضيحية تُحذف عند إيقاف الخادم</strong><nav aria-label="دور الاختبار" style="display:flex;gap:16px">${link('manager','اختبار المدير')}${link('assistant','اختبار المساعد')}</nav></aside>`;
+  const link=(value,label)=>`<a href="/__review/role?as=${value}"${role===value?' aria-current="true"':''}>${label}</a>`;
+  return `<aside id="local-review-banner" role="note" dir="rtl"><span>معاينة محلية · بيانات تجريبية مؤقتة</span><nav aria-label="دور الاختبار">${link('manager','اختبار المدير')}${link('assistant','اختبار المساعد')}</nav></aside>`;
 }
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.ico':'image/x-icon'};
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.ico':'image/x-icon','.woff2':'font/woff2','.woff':'font/woff','.ttf':'font/ttf'};
 function isInsidePublic(path){const part=relative(publicRoot,path);return !part.startsWith('..')&&!isAbsolute(part)}
 const assets={async fetch(request){
   let pathname;

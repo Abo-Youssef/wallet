@@ -1,7 +1,14 @@
 node_modules/
 .dev.vars
+.dev.vars.*
 .env
+.env.*
+!.env.example
 *.log
 *.sqlite
 *.db
 .wrangler/
+dist/
+preview-dist/
+coverage/
+backups/
