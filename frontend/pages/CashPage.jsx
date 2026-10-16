@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { Plus, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import {
+  Plus,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  ChartNoAxesCombined,
+} from "lucide-react";
 import { useWallet } from "../state/WalletProvider.jsx";
 import { Money, Button, Empty, SectionHead } from "../components/ui.jsx";
 import { PageHeading, MonthTools, DueRow } from "../components/workspace.jsx";
 import { agreementById, fmtDate, monthName } from "../lib/format.js";
+import { CashFlowChart } from "../components/WalletCharts.jsx";
 export default function CashPage({ direction }) {
   const { data, month, isAssistant, open } = useWallet(),
     [scope, setScope] = useState("month"),
@@ -49,6 +55,14 @@ export default function CashPage({ direction }) {
           </div>
         ))}
       </div>
+      <details className="cash-chart-disclosure">
+        <summary>
+          <ChartNoAxesCombined size={20} aria-hidden="true" />
+          حركة النقد خلال الشهر
+          <span>الداخل والخارج الفعلي</span>
+        </summary>
+        <CashFlowChart data={data} month={month} />
+      </details>
       <section className="panel cash-worklist">
         <SectionHead title="الاستحقاقات المفتوحة">
           <span className="muted">{dues.length} استحقاق</span>

@@ -39,6 +39,10 @@ import {
 } from "../lib/format.js";
 import { agreementPayments } from "../../public/client-model.mjs";
 import { project } from "../../src/finance.mjs";
+import {
+  CashFlowChart,
+  DueComparisonChart,
+} from "../components/WalletCharts.jsx";
 export function ManagerHome({ navigate }) {
   const { data, open, month } = useWallet(),
     s = data.summary,
@@ -118,6 +122,9 @@ export function ManagerHome({ navigate }) {
               الداخل ناقص الخارج خلال الشهر، ولا يمثل رصيدًا بنكيًا.
             </p>
           </section>
+          <section className="cash-chart-panel">
+            <CashFlowChart data={data} month={month} />
+          </section>
           <section className="portfolio-strip">
             <SectionHead title="أصول محفظتك">
               <Button variant="ghost" onClick={() => navigate("data")}>
@@ -178,6 +185,7 @@ export function ManagerHome({ navigate }) {
               </Button>
             )}
           </section>
+          <DueComparisonChart summary={s} month={month} />
           <section className="task-panel">
             <SectionHead title="مهام المتابعة">
               <Button variant="ghost" onClick={() => open("taskAdd")}>
