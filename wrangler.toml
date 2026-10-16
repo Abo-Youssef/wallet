@@ -1,4 +1,5 @@
 name = "mahfazati-v1"
+account_id = "91fa2e19e65359a20f342917bce678ab"
 main = "src/worker.mjs"
 compatibility_date = "2026-10-13"
 
@@ -9,6 +10,6 @@ run_worker_first = true
 
 [[d1_databases]]
 binding = "DB"
-database_name = "mahfazati-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_name = "wallet-db"
+database_id = "250254c5-4a50-4578-aa24-468bdb0a8fd1"
 migrations_dir = "migrations"
