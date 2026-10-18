@@ -84,11 +84,11 @@ describe("one responsive wallet shell", () => {
     const nav = screen.getByRole("navigation",{name:"التنقل على الجوال"});
     fireEvent.click(within(nav).getByRole("button",{name:"المزيد"}));
     fireEvent.click(screen.getByRole("button",{name:/الدخول إلى وضع المساعد/}));
-    expect(screen.getByRole("heading",{level:1,name:"جدول أعمالك"})).toBeInTheDocument();
+    expect(screen.getByRole("heading",{level:1,name:/مهام اليوم/})).toBeInTheDocument();
     expect(screen.getByRole("button",{name:"إضافة جديدة"})).toBeInTheDocument();
     expect(within(screen.getByRole("banner")).getByText("المدير · وضع المساعد")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button",{name:"العودة إلى وضع الاطلاع"}));
-    expect(screen.getByRole("heading",{level:1,name:"النظرة الشاملة"})).toBeInTheDocument();
+    expect(screen.getByRole("heading",{level:1,name:"نظرة عامة"})).toBeInTheDocument();
     expect(screen.queryByRole("button",{name:"إضافة جديدة"})).not.toBeInTheDocument();
   });
 });

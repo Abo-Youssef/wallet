@@ -54,7 +54,7 @@ export default function App() {
   if (!data) return <AccessEntry loading={loading} error={error} errorCode={errorCode}
     onRetry={() => reload()} animated={!hasEntered.current} signingOut={signingOut} />;
   const title = desktopNavigation.find(item => item[0] === active)?.[1] || (page === "more" ? "المزيد" : "البنود");
-  return <>
+  return <div className={page === "home" ? "app-shell home-theme" : "app-shell"}>
     <a className="skip-link" href="#main-content">تجاوز إلى المحتوى</a>
     {__PREVIEW__ && <div className="preview-banner">معاينة توضيحية دون حفظ <a href="?role=manager">المدير</a><a href="?role=assistant">المساعد</a></div>}
     <header className="app-header">
@@ -131,5 +131,5 @@ export default function App() {
     </nav>
     {canManageData && ["data", "collect", "pay", "invoices"].includes(page) && <button className="mobile-add" aria-label="إضافة جديدة" onClick={() => open("quickadd")}><Plus /></button>}
     {dialog && <React.Fragment key={JSON.stringify(dialog)}><FinancialDialogs dialog={dialog} /><OperationsDialogs dialog={dialog} /></React.Fragment>}
-  </>;
+  </div>;
 }

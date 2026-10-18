@@ -9,6 +9,7 @@ import "@fontsource/ibm-plex-sans-arabic/latin-600.css";
 import App from "./App.jsx";
 import { WalletProvider } from "./state/WalletProvider.jsx";
 import "./styles.css";
+import "./home.css";
 async function start() {
   if (__PREVIEW__) await import("./demo.mjs");
   createRoot(document.getElementById("app")).render(
