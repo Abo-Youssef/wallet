@@ -1,0 +1,18 @@
+name = "wallet"
+account_id = "91fa2e19e65359a20f342917bce678ab"
+main = "src/server/worker.mjs"
+compatibility_date = "2026-10-13"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+preview_urls = false
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = true
+
+# Neon production; Hyperdrive query caching is disabled for financial accuracy.
+# Never put the PostgreSQL password/connection string in this file.
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "54b2909d92ac4f89a440ea4ca6affd03"
